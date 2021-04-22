@@ -48,7 +48,7 @@ return [
     ],
     'yz'=>[
         'driver' => env('DB_YZ_DRIVER', 'mysql'),
-        'host' => env('DB_YZ_HOST2', ''),
+        'host' => env('DB_YZ_HOST', ''),
         'database' => env('DB_YZ_DATABASE', ''),
         'username' => env('DB_YZ_USERNAME', ''),
         'password' => env('DB_YZ_PASSWORD', ''),
