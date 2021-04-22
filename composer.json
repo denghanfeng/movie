@@ -37,8 +37,7 @@
         "hyperf/rpc-server": "^2.1",
         "hyperf/session": "^2.1",
         "hyperf/task": "^2.1",
-        "hyperf/validation": "^2.1",
-        "phper666/jwt-auth": "^3.0"
+        "hyperf/validation": "^2.1"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.14",
