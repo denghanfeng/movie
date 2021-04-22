@@ -12,10 +12,10 @@ declare(strict_types=1);
 return [
     'default' => [
         'driver' => env('DB_DRIVER', 'mysql'),
-        'host' => env('DB_HOST', 'localhost'),
+        'host' => env('DB_HOST', ''),
         'port' => env('DB_PORT', 3306),
-        'database' => env('DB_DATABASE', 'hyperf'),
-        'username' => env('DB_USERNAME', 'root'),
+        'database' => env('DB_DATABASE', ''),
+        'username' => env('DB_USERNAME', ''),
         'password' => env('DB_PASSWORD', ''),
         'charset' => env('DB_CHARSET', 'utf8mb4'),
         'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
@@ -48,9 +48,9 @@ return [
     ],
     'yz'=>[
         'driver' => env('DB_YZ_DRIVER', 'mysql'),
-        'host' => env('DB_YZ_HOST2', 'localhost'),
-        'database' => env('DB_YZ_DATABASE', 'hyperf'),
-        'username' => env('DB_YZ_USERNAME', 'root'),
+        'host' => env('DB_YZ_HOST2', ''),
+        'database' => env('DB_YZ_DATABASE', ''),
+        'username' => env('DB_YZ_USERNAME', ''),
         'password' => env('DB_YZ_PASSWORD', ''),
         'charset' => env('DB_YZ_CHARSET', 'utf8'),
         'collation' => env('DB_YZ_COLLATION', 'utf8_unicode_ci'),
