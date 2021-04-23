@@ -20,6 +20,7 @@ use Hyperf\HttpServer\Contract\ResponseInterface;
 use OutOfBoundsException;
 use Psr\Container\ContainerInterface;
 use App\Middleware\AuthMiddleware;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 
 /**
  *
@@ -54,6 +55,11 @@ abstract class AbstractController
      * @var AppExceptionHandler
      */
     protected $logger;
+    /**
+     * @Inject()
+     * @var ValidatorFactoryInterface
+     */
+    protected $validationFactory;
 
     /**
      * 成功回调
