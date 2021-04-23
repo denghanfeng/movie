@@ -15,6 +15,7 @@ use App\Log;
 use App\Services\CinemaService;
 use App\Services\OrderService;
 use App\Services\PayService;
+use App\Task\CrontabTask;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 
@@ -68,6 +69,14 @@ class NotifyController extends AbstractController
         return $this->success($this->payService->notify($param));
     }
 
+    /**
+     * 全部同步
+     * @author: DHF 2021/4/23 18:36
+     */
+    public function all()
+    {
+        (new CrontabTask)->updateAll();
+    }
 
     public function orderHandle(){
         $data['thirdOrderId'] = $this->request->post('thirdOrderId', '');
