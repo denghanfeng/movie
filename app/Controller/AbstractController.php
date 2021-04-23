@@ -11,12 +11,12 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Exception\Handler\AppExceptionHandler;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
-use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use OutOfBoundsException;
 use Psr\Container\ContainerInterface;
 use App\Middleware\AuthMiddleware;
@@ -51,9 +51,9 @@ abstract class AbstractController
     protected $response;
     /**
      * @Inject()
-     * @var ValidatorFactoryInterface
+     * @var AppExceptionHandler
      */
-    protected $validationFactory;
+    protected $logger;
 
     /**
      * 成功回调

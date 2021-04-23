@@ -9,7 +9,7 @@ use OverflowException;
 
 class OrderTask extends BasickTask
 {
-    const NOTIFY_URL = '/order/notify?channel=toto';
+    const NOTIFY_URL = '/notify/order?channel=toto';
 
     /**
      * @Inject()

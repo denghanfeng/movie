@@ -2,11 +2,8 @@
 namespace App\Services;
 
 use App\Model\Order;
-use App\Server\moive\MoiveService;
 use App\Task\CrontabTask;
-use App\Task\OrderTask;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\ApplicationContext;
 use RuntimeException;
 
 class OrderService extends BaseService
@@ -44,10 +41,17 @@ class OrderService extends BaseService
         if(!$show = (new CrontabTask)->updateShow($param['cinemaId'],$param['showId'])){
             throw new RuntimeException('订单场次查询失败',2005);
         };
+        print_r($show);
         $param['uid'] = $this->authService->getUser('uid');
         $param['orderStatus'] = Order::STATUS_START;
         $param['orderNum'] = count(explode(",",$param['seat']));
         $param['initPrice'] = $show->netPrice;
+        $param['hallName'] = $show->hallName;
+        $param['showTime'] = $show->showTime;
+        $param['showVersionType'] = $show->showVersionType;
+        $param['language'] = $show->language;
+        $param['planType'] = $show->planType;
+
         if(!$Order = Order::create($param)){
             throw new RuntimeException('订单保存失败',2004);
         };
@@ -66,7 +70,19 @@ class OrderService extends BaseService
     {
         $order = Order::with('cinema')->find($thirdOrderId);
         $order->cinema->setVisible(['cinemaName','address','latitude','longitude','phone','regionName']);
-        return $order->setVisible(['cinema','seat','reservedPhone','acceptChangeSeat','orderStatus','created_at','thirdOrderId'])->toArray();
+        return $order->setVisible([
+            'cinema',
+            'seat',
+            'reservedPhone',
+            'acceptChangeSeat',
+            'orderStatus',
+            'created_at',
+            'thirdOrderId',
+            'hallName',
+            'showVersionType',
+            'language',
+            'planType',
+        ])->toArray();
     }
 
     /**
@@ -85,7 +101,20 @@ class OrderService extends BaseService
         $max_id && $order->where('thirdOrderId','<=',$max_id);
         return $order
             ->orderBy('thirdOrderId','desc')
-            ->get(['cinemaId','seat','reservedPhone','acceptChangeSeat','orderStatus','created_at','thirdOrderId'])
+            ->get([
+                'cinema',
+                'seat',
+                'reservedPhone',
+                'acceptChangeSeat',
+                'orderStatus',
+                'created_at',
+                'thirdOrderId',
+                'hallName',
+                'showVersionType',
+                'language',
+                'planType',
+                'cinemaId'
+            ])
             ->toArray();
     }
 
@@ -104,16 +133,5 @@ class OrderService extends BaseService
         };
         return true;
     }
-
-    /**
-     * 订单支付回调
-     * @param int $order_id
-     * @author: DHF 2021/4/21 15:38
-     */
-    public function pay(int $order_id)
-    {
-        ApplicationContext::getContainer()->get(OrderTask::class)->create($order_id);
-    }
-
 
 }

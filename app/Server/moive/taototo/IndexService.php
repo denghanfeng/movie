@@ -192,7 +192,7 @@ class IndexService implements IndexTemplate
     /**
      * 订单查询
      * @param array $param
-     * @return bool
+     * @return bool|array
      * @author: DHF 2021/3/11 16:06
      */
     public function orderQuery(array $param = [])

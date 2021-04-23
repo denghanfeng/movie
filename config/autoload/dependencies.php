@@ -11,4 +11,5 @@ declare(strict_types=1);
  */
 return [
     App\JsonRpc\YzApiInterface::class => App\JsonRpc\YzApiService::class,
+    Hyperf\Contract\StdoutLoggerInterface::class => App\StdoutLoggerFactory::class,
 ];

@@ -7,16 +7,16 @@ use App\Model\CityArea;
 use App\Model\Filme;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Task\Annotation\Task;
 
 
 class CrontabTask
 {
     /**
      * @Inject()
-     * @var \Hyperf\Contract\StdoutLoggerInterface
+     * @var StdoutLoggerInterface
      */
     private $logger;
 
@@ -44,7 +44,6 @@ class CrontabTask
      */
     public function updateCitys()
     {
-        $this->logger->info(date('Y-m-d H:i:s').' CrontabTask::updateCitys => start');
         if(!$city_list = $this->moiveService->create()->getCityList()){
             return false;
         };
@@ -139,7 +138,7 @@ class CrontabTask
     {
         $show_id_list = Show::where(['cinemaId'=>$cinemaId])->pluck('showId')->toArray();
         if($showId && in_array($showId,$show_id_list)){
-            return true;
+            return Show::find($showId);
         }
         if(!$schedule_list = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
@@ -149,7 +148,7 @@ class CrontabTask
                 $schedule['cinemaId'] = $cinemaId;
                 $show = Show::updateOrCreate(['showId'=>$schedule['showId']], $schedule);
                 //如果指定更新则更新后直接退出
-                if($showId && $showId == $schedule['cinemaId']) {
+                if($showId && $showId == $schedule['showId']) {
                     return $show;
                 }
             }

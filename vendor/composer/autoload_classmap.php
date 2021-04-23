@@ -8,9 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Controller\\AbstractController' => $baseDir . '/app/Controller/AbstractController.php',
     'App\\Controller\\IndexController' => $baseDir . '/app/Controller/IndexController.php',
+    'App\\Controller\\NotifyController' => $baseDir . '/app/Controller/NotifyController.php',
     'App\\Controller\\OrderController' => $baseDir . '/app/Controller/OrderController.php',
-    'App\\Controller\\PayController' => $baseDir . '/app/Controller/PayController.php',
     'App\\Exception\\Handler\\AppExceptionHandler' => $baseDir . '/app/Exception/Handler/AppExceptionHandler.php',
+    'App\\Exception\\Handler\\StdoutLoggerFactory' => $baseDir . '/app/Exception/Handler/StdoutLoggerFactory.php',
     'App\\JsonRpc\\YzApiInterface' => $baseDir . '/app/JsonRpc/YzApiInterface.php',
     'App\\JsonRpc\\YzApiService' => $baseDir . '/app/JsonRpc/YzApiService.php',
     'App\\Listener\\DbQueryExecutedListener' => $baseDir . '/app/Listener/DbQueryExecutedListener.php',

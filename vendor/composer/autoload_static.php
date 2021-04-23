@@ -623,9 +623,10 @@ class ComposerStaticInitda805a105b747007cc5d52092947cdb6
     public static $classMap = array (
         'App\\Controller\\AbstractController' => __DIR__ . '/../..' . '/app/Controller/AbstractController.php',
         'App\\Controller\\IndexController' => __DIR__ . '/../..' . '/app/Controller/IndexController.php',
+        'App\\Controller\\NotifyController' => __DIR__ . '/../..' . '/app/Controller/NotifyController.php',
         'App\\Controller\\OrderController' => __DIR__ . '/../..' . '/app/Controller/OrderController.php',
-        'App\\Controller\\PayController' => __DIR__ . '/../..' . '/app/Controller/PayController.php',
         'App\\Exception\\Handler\\AppExceptionHandler' => __DIR__ . '/../..' . '/app/Exception/Handler/AppExceptionHandler.php',
+        'App\\Exception\\Handler\\StdoutLoggerFactory' => __DIR__ . '/../..' . '/app/Exception/Handler/StdoutLoggerFactory.php',
         'App\\JsonRpc\\YzApiInterface' => __DIR__ . '/../..' . '/app/JsonRpc/YzApiInterface.php',
         'App\\JsonRpc\\YzApiService' => __DIR__ . '/../..' . '/app/JsonRpc/YzApiService.php',
         'App\\Listener\\DbQueryExecutedListener' => __DIR__ . '/../..' . '/app/Listener/DbQueryExecutedListener.php',

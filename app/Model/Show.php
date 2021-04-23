@@ -16,8 +16,6 @@ namespace App\Model;
  * @property int $netPrice 参考价，单位：分
  * @property string $language 语言
  * @property string $planType 影厅类型 2D 3D
- * @property string $created_at 
- * @property string $updated_at 
  */
 class Show extends Model
 {
@@ -29,12 +27,13 @@ class Show extends Model
     protected $table = 'shows';
     protected $primaryKey = 'showId';
     public $timestamps = false;
+    public $incrementing = false; //主键不为int型
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['showId', 'cinemaId', 'hallName', 'filmId', 'filmName', 'duration', 'showTime', 'stopSellTime', 'showVersionType', 'netPrice', 'language', 'planType', 'created_at', 'updated_at'];
+    protected $fillable = ['showId', 'cinemaId', 'hallName', 'filmId', 'filmName', 'duration', 'showTime', 'stopSellTime', 'showVersionType', 'netPrice', 'language', 'planType'];
     /**
      * The attributes that should be cast to native types.
      *

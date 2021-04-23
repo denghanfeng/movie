@@ -24,8 +24,6 @@ class CreateShows extends Migration
             $table->integer('netPrice')->comment('参考价，单位：分');
             $table->string('language')->comment('语言');
             $table->string('planType')->comment('影厅类型 2D 3D');
-
-            $table->timestamps();
         });
     }
 

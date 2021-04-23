@@ -26,10 +26,15 @@ namespace App\Model;
  * @property string $ticketCode 取票码，type为1时，为字符串，type为2时，为取票码原始截图。 理论上一个取票码包含各字符串和原始截图， 原始截图可能不和字符串同步返回，有滞后性。
  * @property string $ticketImage 取票码原始截图
  * @property int $acceptChangeSeat 是否允许调座
+ * @property string $hallName 影厅名
+ * @property string $showTime 放映时间
+ * @property string $showVersionType 场次类型
+ * @property string $language 语言
+ * @property string $planType 影厅类型 2D 3D
  * @property \Carbon\Carbon $created_at 
  * @property \Carbon\Carbon $updated_at 
- * @property-read \App\Model\Cinema $cinema
- * @property-read \App\Model\Filme $filme
+ * @property-read \App\Model\Cinema $cinema 
+ * @property-read \App\Model\Filme $filme 
  */
 class Order extends Model
 {
@@ -59,7 +64,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'created_at', 'updated_at'];
+    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at'];
     /**
      * The attributes that should be cast to native types.
      *

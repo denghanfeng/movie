@@ -95,6 +95,21 @@ class IndexController extends AbstractController
     }
 
 
+    public function schedule()
+    {
+        $this->validated([
+            'filmId' => 'required|integer',
+            'cityId' => 'integer',
+            'areaId' => 'integer',
+            'max_id' => 'integer',
+        ]);
+        $filmId = $this->request->input('filmId', 0);
+        $cityId = $this->request->input('cityId', 0);
+        $areaId = $this->request->input('areaId', 0);
+        $date = $this->request->input('date', '');
+        $max_id = $this->request->input('max_id', 0);
+        return $this->success($this->indexService->getScheduleList($filmId,$cityId,$areaId,$date,$max_id));
+    }
 
     /**
      * 获取影院列表
@@ -156,6 +171,7 @@ class IndexController extends AbstractController
         $this->validated([
             'filmId' => 'required|integer',
             'cityId' => 'required|integer',
+            'date' => 'required|string',
             'page' => 'integer',
             'limit' => 'integer',
             'latitude' => 'double',
@@ -168,7 +184,7 @@ class IndexController extends AbstractController
     /**
      * 包含某电影的日期
      * @return \Psr\Http\Message\ResponseInterface
-     * @author: DHF 2021/4/14 18:13
+     * @author: DHF 2021/4/23 15:46
      */
     public function showDate()
     {

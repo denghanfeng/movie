@@ -2,7 +2,9 @@
 namespace App\Services;
 
 use App\Model\Order;
+use App\Task\OrderTask;
 use Hyperf\Di\Annotation\Inject;
+use Hyperf\Utils\ApplicationContext;
 use RuntimeException;
 
 class PayService extends BaseService
@@ -20,12 +22,6 @@ class PayService extends BaseService
      * @var AuthService
      */
     protected $authService;
-
-    /**
-     * @Inject()
-     * @var OrderService
-     */
-    protected $orderService;
 
     /**
      * 调起支付
@@ -49,12 +45,6 @@ class PayService extends BaseService
             throw new RuntimeException($info['message'],$info['code']);
         }
         return $info['data'];
-    }
-
-    private function baseData()
-    {
-
-
     }
 
     /**
@@ -90,14 +80,14 @@ class PayService extends BaseService
     }
 
     /**
-     * 回调
+     * 支付回调
      * @param $param
      * @return array
-     * @author: DHF 2021/4/21 15:22
+     * @author: DHF 2021/4/23 17:16
      */
     public function notify($param)
     {
-        $this->orderService->pay();
-        return [];
+        return ApplicationContext::getContainer()->get(OrderTask::class)->create($param['order_id']);
     }
+
 }

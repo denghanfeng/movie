@@ -34,6 +34,11 @@ class CreateOrders extends Migration
             $table->string('ticketCode')->nullable()->comment('取票码，type为1时，为字符串，type为2时，为取票码原始截图。 理论上一个取票码包含各字符串和原始截图， 原始截图可能不和字符串同步返回，有滞后性。');
             $table->string('ticketImage')->nullable()->comment('取票码原始截图');
             $table->boolean('acceptChangeSeat')->default(0)->comment('是否允许调座');
+            $table->string('hallName')->default('')->comment('影厅名');
+            $table->timestamp('showTime')->comment('放映时间');
+            $table->string('showVersionType')->comment('场次类型');
+            $table->string('language')->comment('语言');
+            $table->string('planType')->comment('影厅类型 2D 3D');
             $table->timestamps();
         });
     }
