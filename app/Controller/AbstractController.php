@@ -11,7 +11,7 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Exception\Handler\AppExceptionHandler;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Middlewares;
 use Hyperf\HttpServer\Annotation\Middleware;
@@ -52,7 +52,7 @@ abstract class AbstractController
     protected $response;
     /**
      * @Inject()
-     * @var AppExceptionHandler
+     * @var StdoutLoggerInterface
      */
     protected $logger;
     /**

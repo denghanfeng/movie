@@ -41,7 +41,6 @@ class OrderService extends BaseService
         if(!$show = (new CrontabTask)->updateShow($param['cinemaId'],$param['showId'])){
             throw new RuntimeException('订单场次查询失败',2005);
         };
-        print_r($show);
         $param['uid'] = $this->authService->getUser('uid');
         $param['orderStatus'] = Order::STATUS_START;
         $param['orderNum'] = count(explode(",",$param['seat']));
@@ -52,7 +51,7 @@ class OrderService extends BaseService
         $param['language'] = $show->language;
         $param['planType'] = $show->planType;
 
-        if(!$Order = Order::create($param)){
+        if(!$Order = Order::createById($param)){
             throw new RuntimeException('订单保存失败',2004);
         };
         return $this->payService->index($Order);

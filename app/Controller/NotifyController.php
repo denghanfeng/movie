@@ -49,11 +49,12 @@ class NotifyController extends AbstractController
      */
     public function order()
     {
-        Log::get()->debug(json_encode($this->request->all()));
+        $param = $this->request->all();
+        $this->logger->alert(json_encode($param));
         return $this->response->json([
             'code' => 200,
             'message' => '请求成功',
-            'success' => $this->orderService->notify($this->request->all())
+            'success' => $this->orderService->notify($param)
         ]);
     }
 
@@ -65,7 +66,7 @@ class NotifyController extends AbstractController
     public function pay()
     {
         $param = $this->request->all();
-        Log::get()->debug(json_encode($param));
+        $this->logger->alert(json_encode($param));
         return $this->success($this->payService->notify($param));
     }
 

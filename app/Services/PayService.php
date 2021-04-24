@@ -9,8 +9,8 @@ use RuntimeException;
 
 class PayService extends BaseService
 {
-    const WX_MP_PAY_API = '/api/weixin/mp-pay'; //微信公众号
-    const WX_MINI_PAY_API = '/api/weixin/mp-pay'; //微信小程序支付
+    const WX_MP_PAY_API = '/api/pay/wx-mp'; //微信公众号
+    const WX_MINI_PAY_API = '/api/pay/wx-mini'; //微信小程序支付
 
     const ACTION = 'moive';
     private $post_data = [];

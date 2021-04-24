@@ -3,6 +3,7 @@ namespace App\Task;
 
 use App\Model\Order;
 use App\Server\moive\MoiveService;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Task\Annotation\Task;
 use Hyperf\Utils\ApplicationContext;
@@ -10,6 +11,12 @@ use OverflowException;
 
 class BasickTask
 {
+    /**
+     * @Inject()
+     * @var StdoutLoggerInterface
+     */
+    protected $logger;
+
     const TOP_TIMES = 3; //最大重复次数
     public $times = 1;
 

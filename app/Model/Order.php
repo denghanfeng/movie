@@ -3,6 +3,8 @@
 declare (strict_types=1);
 namespace App\Model;
 
+use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
+
 /**
  * @property int $thirdOrderId 接入方的订单号
  * @property int $uid 用户id
@@ -89,4 +91,34 @@ class Order extends Model
     {
         return $this->hasOne(Filme::class, 'filmId', 'filmId');
     }
+
+    /**
+     * 生成新的订单账号
+     * @author: DHF 2021/4/24 11:41
+     */
+    public static function getNewId():int
+    {
+        list($s1,$s2) = explode('.',(string)microtime(true));
+        return (int)(date("YmdHis").$s2);
+    }
+
+    /**
+     * 主键去重复生成
+     * @param $param
+     * @param int $time
+     * @return Order|false|\Hyperf\Database\Model\Model
+     * @author: DHF 2021/4/24 11:45
+     */
+    public static function createById($param,$time = 0)
+    {
+        if($time >3){
+            return false;
+        }
+        $param['thirdOrderId'] = Order::getNewId();
+        if(!$order = Order::create($param)){
+            $order = self::createById($param,$time+1);
+        };
+        return $order;
+    }
+
 }
