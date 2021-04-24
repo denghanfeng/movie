@@ -62,20 +62,19 @@ class OrderService extends BaseService
     }
 
 
-
     /**
      * 查询单个订单信息
-     * @param integer $thirdOrderId
-     * @return array
-     * @author: DHF 2021/4/16 15:02
+     * @param int $thirdOrderId
+     * @return Order|\Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|\Hyperf\Database\Query\Builder|object|null
+     * @author: DHF 2021/4/24 18:14
      */
     public function one(int $thirdOrderId)
     {
-        $order = Order::with('cinema')->find($thirdOrderId);
-        $order->cinema->setVisible(['cinemaName','address','latitude','longitude','phone','regionName']);
-        return $order->setVisible([
-            'cinema',
+        return Order::with(['cinema'=>function($query){
+            return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
+        }])->select([
             'seat',
+            'cinemaId',
             'reservedPhone',
             'acceptChangeSeat',
             'orderStatus',
@@ -85,7 +84,7 @@ class OrderService extends BaseService
             'showVersionType',
             'language',
             'planType',
-        ])->toArray();
+        ])->where(['thirdOrderId'=>$thirdOrderId])->first();
     }
 
     /**
@@ -105,7 +104,6 @@ class OrderService extends BaseService
         return $order
             ->orderBy('thirdOrderId','desc')
             ->get([
-                'cinema',
                 'seat',
                 'reservedPhone',
                 'acceptChangeSeat',
