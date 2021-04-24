@@ -10,6 +10,7 @@ return array(
     'App\\Controller\\IndexController' => $baseDir . '/app/Controller/IndexController.php',
     'App\\Controller\\NotifyController' => $baseDir . '/app/Controller/NotifyController.php',
     'App\\Controller\\OrderController' => $baseDir . '/app/Controller/OrderController.php',
+    'App\\Controller\\TestController' => $baseDir . '/app/Controller/TestController.php',
     'App\\Exception\\Handler\\AppExceptionHandler' => $baseDir . '/app/Exception/Handler/AppExceptionHandler.php',
     'App\\JsonRpc\\YzApiInterface' => $baseDir . '/app/JsonRpc/YzApiInterface.php',
     'App\\JsonRpc\\YzApiService' => $baseDir . '/app/JsonRpc/YzApiService.php',

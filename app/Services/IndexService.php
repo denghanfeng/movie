@@ -108,19 +108,6 @@ class IndexService extends BaseService
             ->toArray();
     }
 
-
-    public function getScheduleList($filmId,$cityId,$areaId,$date,$max_id):array
-    {
-        $Cinema = Cinema::where('cityId',$cityId);
-        $areaId && $Cinema->where('areaId',$areaId);
-        $max_id && $Cinema->where('cinemaId','<',$max_id);
-        return $Cinema
-            ->limit(10)
-            ->orderBy('cinemaId','desc')
-            ->get(['cinemaId', 'cityId', 'cinemaName', 'address', 'latitude', 'longitude', 'phone', 'regionName', 'isAcceptSoonOrder'])
-            ->toArray();
-    }
-
     /**
      * 排期页面
      * @param $cinemaId //影院

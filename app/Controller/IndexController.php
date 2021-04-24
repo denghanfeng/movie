@@ -94,23 +94,6 @@ class IndexController extends AbstractController
         return $this->success($this->indexService->getCityAreaList((int)$cityId));
     }
 
-
-    public function schedule()
-    {
-        $this->validated([
-            'filmId' => 'required|integer',
-            'cityId' => 'integer',
-            'areaId' => 'integer',
-            'max_id' => 'integer',
-        ]);
-        $filmId = $this->request->input('filmId', 0);
-        $cityId = $this->request->input('cityId', 0);
-        $areaId = $this->request->input('areaId', 0);
-        $date = $this->request->input('date', '');
-        $max_id = $this->request->input('max_id', 0);
-        return $this->success($this->indexService->getScheduleList($filmId,$cityId,$areaId,$date,$max_id));
-    }
-
     /**
      * 获取影院列表
      * @return \Psr\Http\Message\ResponseInterface

@@ -625,6 +625,7 @@ class ComposerStaticInitda805a105b747007cc5d52092947cdb6
         'App\\Controller\\IndexController' => __DIR__ . '/../..' . '/app/Controller/IndexController.php',
         'App\\Controller\\NotifyController' => __DIR__ . '/../..' . '/app/Controller/NotifyController.php',
         'App\\Controller\\OrderController' => __DIR__ . '/../..' . '/app/Controller/OrderController.php',
+        'App\\Controller\\TestController' => __DIR__ . '/../..' . '/app/Controller/TestController.php',
         'App\\Exception\\Handler\\AppExceptionHandler' => __DIR__ . '/../..' . '/app/Exception/Handler/AppExceptionHandler.php',
         'App\\JsonRpc\\YzApiInterface' => __DIR__ . '/../..' . '/app/JsonRpc/YzApiInterface.php',
         'App\\JsonRpc\\YzApiService' => __DIR__ . '/../..' . '/app/JsonRpc/YzApiService.php',

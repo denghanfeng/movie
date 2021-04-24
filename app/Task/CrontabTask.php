@@ -65,16 +65,14 @@ class CrontabTask
     {
         $city_list = City::all(['cityId']);
         foreach ($city_list as $city){
-            co(function () use ($city) {
-                if (!$city_area_list = $this->moiveService->create()->getCityAreaList(['cityId' => $city->cityId])) {
-                    return false;
-                };
-                $city_area_id_list = CityArea::where(['cityId' => $city->cityId])->pluck('areaId')->toArray();
-                foreach ($city_area_list as $city_area) {
-                    $city_area['cityId'] = $city->cityId;
-                    in_array($city_area['areaId'], $city_area_id_list) || CityArea::updateOrCreate(['areaId' => $city_area['areaId']], $city_area);
-                }
-            });
+            if (!$city_area_list = $this->moiveService->create()->getCityAreaList(['cityId' => $city->cityId])) {
+                return false;
+            };
+            $city_area_id_list = CityArea::where(['cityId' => $city->cityId])->pluck('areaId')->toArray();
+            foreach ($city_area_list as $city_area) {
+                $city_area['cityId'] = $city->cityId;
+                in_array($city_area['areaId'], $city_area_id_list) || CityArea::updateOrCreate(['areaId' => $city_area['areaId']], $city_area);
+            }
         }
         return true;
     }
@@ -87,18 +85,24 @@ class CrontabTask
     public function updateCinema()
     {
         $city_list = City::all(['cityId']);
-        $city_area_list = CityArea::all()->toArray();
-        $city_area_list = array_combine(array_column($city_area_list,'areaName'),array_column($city_area_list,'areaId'));
+        $city_area_list = CityArea::all();
+        $city_area_array = [];
+        foreach ($city_area_list as $city_area){
+            isset($city_area_array[$city_area->cityId]) || $city_area_array[$city_area->cityId] = [];
+            $city_area_array[$city_area->cityId][$city_area->areaName] = $city_area->areaId;
+        }
+
         foreach ($city_list as $city){
-            co(function () use ($city,$city_area_list) {
-                if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
-                    return;
-                };
-                $cinema_id_list = Cinema::where(['cityId'=>$city->cityId])->pluck('cinemaId')->toArray();
-                foreach ($cinema_list as $cinema){
+            if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
+                continue;
+            };
+            co(function () use ($cinema_list,$city) {
+                $cinema_id_list = Cinema::where(['cityId' => $city->cityId])->pluck('cinemaId')->toArray();
+                foreach ($cinema_list as $cinema) {
                     $cinema['cityId'] = $city->cityId;
-                    $cinema['areaId'] = $city_area_list[$cinema['regionName']] ?? 0;
-                    in_array($cinema['cinemaId'],$cinema_id_list) || Cinema::updateOrCreate(['cinemaId'=>$cinema['cinemaId']], $cinema);
+                    $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
+                    $cinema['cityId'] == 8 && $this->logger->alert(json_encode($cinema));
+                    in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
                 }
             });
         }
@@ -113,7 +117,7 @@ class CrontabTask
     public function updateFilme()
     {
         for ($id = 1;$id <= 10;$id++){
-            co(function () use ($id) {
+
                 if(!$hot_list = $this->moiveService->create()->getHotList(['cityId'=>$id])){
                     return true;
                 }
@@ -121,6 +125,7 @@ class CrontabTask
                     return true;
                 }
                 $list = array_merge($hot_list,$soon_list);
+            co(function () use ($list) {
                 foreach ($list as $filme){
                     $filme['like'] = $filme['likeNum'];
                     $filme['grade'] = (int)$filme['grade'];

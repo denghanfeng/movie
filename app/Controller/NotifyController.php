@@ -76,20 +76,4 @@ class NotifyController extends AbstractController
         (new CrontabTask)->updateAll();
         return $this->success();
     }
-
-    public function orderHandle(){
-        $data['thirdOrderId'] = $this->request->post('thirdOrderId', '');
-        $data['eventName'] = $this->request->post('eventName', '');
-        return $this->success($this->cinemaService->orderHandle($data));
-    }
-
-    public function orderQuery(){
-        $data['thirdOrderId'] = $this->request->post('thirdOrderId', '');
-        return $this->success($this->cinemaService->orderQuery($data));
-    }
-
-    public function userInfo()
-    {
-        return $this->success($this->cinemaService->userInfo());
-    }
 }
