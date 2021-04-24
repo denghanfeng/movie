@@ -19,19 +19,19 @@ class AuthService extends BaseService
 
     /**
      * 用户信息匹配
-     * @param string $openid
+     * @param int $uid
      * @param int $wx_id
      * @return bool
      * @author: DHF 2021/4/13 15:29
      */
-    public function login(string $openid,int $wx_id)
+    public function login(int $uid,int $wx_id)
     {
-        if($this->getUser('openid') == $openid){
+        if($this->getUser('uid') == $uid){
             return true;
         }
-        if(!$user = User::query()->where(['openid'=>$openid,'wx_id'=>$wx_id])->first()) {
+        if(!$user = User::query()->where(['uid'=>$uid,'wx_id'=>$wx_id])->first()) {
             $yz_api = ApplicationContext::getContainer()->get(YzApiInterface::class);
-            $user_info = $yz_api->getUser($openid,$wx_id);
+            $user_info = $yz_api->getUser($uid,$wx_id);
             if(empty($user_info)){
                 throw new RuntimeException('用户信息错误',2002);
             }

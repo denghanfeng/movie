@@ -15,12 +15,12 @@ class YzApiService implements YzApiInterface
 
     /**
      * 获取用户信息
-     * @param string $openid
+     * @param int $uid
      * @param int $wx_id
      * @return array
      * @author: DHF 2021/4/13 14:47
      */
-    public function getUser(string $openid,int $wx_id): array
+    public function getUser(int $uid,int $wx_id): array
     {
         $wx_list =  Db::connection('yz')->select('
 SELECT accounts_id 
@@ -31,9 +31,9 @@ WHERE id = ?
         $user_list =  Db::connection('yz')->select('
 SELECT * 
 FROM wx_user_info
-WHERE openid = ?
+WHERE user_id = ?
 AND wx_id = ?
-;',[$openid,$wx_id]);
+;',[$uid,$wx_id]);
         if(empty($user_list[0]) || empty($wx_list[0])){
             return [];
         }

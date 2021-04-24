@@ -56,7 +56,7 @@ class AuthMiddleware implements MiddlewareInterface
             throw new OutOfBoundsException($validator->errors()->first(),2001);
         }
 
-        $this->authService->login($query_params['openid'],(int)$query_params['wx_id']);
+        $this->authService->login((int)base64_decode($query_params['openid']),(int)$query_params['wx_id']);
 
         return $handler->handle($request);
     }
