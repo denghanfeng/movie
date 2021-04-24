@@ -54,7 +54,7 @@ class IndexController extends AbstractController
     }
 
     /**
-     * 获取热映电影
+     * 获取电影
      * @return \Psr\Http\Message\ResponseInterface
      * @author: DHF 2021/4/14 11:57
      */

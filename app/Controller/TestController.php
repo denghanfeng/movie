@@ -58,6 +58,11 @@ class TestController extends AbstractController
         return $this->success($this->moiveService->create()->getCityAreaList(['cityId' => $cityId]));
     }
 
+    public function seat(){
+        $showId = $this->request->input('showId', 866073168);
+        return $this->success($this->moiveService->create()->getSeat(['showId'=>$showId]));
+    }
+
     public function orderHandle(){
         $data['thirdOrderId'] = $this->request->post('thirdOrderId', '');
         $data['eventName'] = $this->request->post('eventName', '');
