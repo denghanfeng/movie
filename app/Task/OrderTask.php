@@ -26,6 +26,7 @@ class OrderTask extends BasickTask
      */
     public function create($thirdOrderId)
     {
+        $this->logger->alert($thirdOrderId);
         if(!$Order = Order::where(['thirdOrderId'=>$thirdOrderId,'orderStatus'=>Order::STATUS_PAY])->first()){
             throw new OverflowException("没有找到信息 thirdOrderId={$thirdOrderId}",33061);
         };
