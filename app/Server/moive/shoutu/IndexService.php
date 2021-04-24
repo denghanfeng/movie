@@ -1,7 +1,8 @@
 <?php
-namespace App\Server\moive\taototo;
+namespace App\Server\moive\shoutu;
 
 use App\Server\moive\IndexTemplate;
+use Hyperf\Di\Annotation\Inject;
 use OutOfBoundsException;
 
 /**
@@ -12,23 +13,12 @@ use OutOfBoundsException;
  */
 class IndexService implements IndexTemplate
 {
+
     /**
-     * 验证sign
-     * @return bool
-     * @author: DHF
+     * @Inject
+     * @var Config
      */
-    public function getsign()
-    {
-        $param['appKey'] = Config::APPKEY;
-        $param['time'] = time();
-        $data = curlPost(Config::CUR_URL.Config::GET_SIGN,$param);
-        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
-        }
-        return $data['data']['sign'] == Config::encrypt($param)['sign'];
-    }
+    protected $config;
 
     /**
      * 获取城市列表
@@ -38,7 +28,7 @@ class IndexService implements IndexTemplate
      */
     public function getCityList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_CITY_LIST,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_CITY_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -55,7 +45,7 @@ class IndexService implements IndexTemplate
      */
     public function getCityAreaList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_CITY_AREA,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_CITY_AREA,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -72,7 +62,7 @@ class IndexService implements IndexTemplate
      */
     public function getCinemaList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_CINEMA_LIST,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_CINEMA_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -89,7 +79,7 @@ class IndexService implements IndexTemplate
      */
     public function getHotList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_HOT_LIST,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_HOT_LIST,$this->config->encrypt($param));
         if(!is_array($data) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -106,7 +96,7 @@ class IndexService implements IndexTemplate
      */
     public function getSoonList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_SOON_LIST,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_SOON_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -123,7 +113,7 @@ class IndexService implements IndexTemplate
      */
     public function getScheduleList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_SCHEDULE_LIST,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_SCHEDULE_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -140,7 +130,7 @@ class IndexService implements IndexTemplate
      */
     public function getSeat(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_SEAT,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_SEAT,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -157,7 +147,7 @@ class IndexService implements IndexTemplate
      */
     public function getShowList(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_SHOW_LIST,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_SHOW_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -174,7 +164,7 @@ class IndexService implements IndexTemplate
      */
     public function getShowDate(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::GET_SHOW_DATE,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::GET_SHOW_DATE,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -190,7 +180,7 @@ class IndexService implements IndexTemplate
      */
     public function createOrder(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::API_ORDER_CREATE,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::API_ORDER_CREATE,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -207,7 +197,7 @@ class IndexService implements IndexTemplate
      */
     public function orderHandle(array $param = [])
     {
-        return curlPost(Config::CUR_URL.Config::API_AUTOMATION_ORDERHANDLE,Config::encrypt($param));
+        return curlPost($this->config->cur_url.Config::API_AUTOMATION_ORDERHANDLE,$this->config->encrypt($param));
     }
 
     /**
@@ -218,7 +208,7 @@ class IndexService implements IndexTemplate
      */
     public function orderQuery(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::API_ORDER_QUERY,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::API_ORDER_QUERY,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -234,7 +224,7 @@ class IndexService implements IndexTemplate
      */
     public function userInfo()
     {
-        $data = curlPost(Config::CUR_URL.Config::API_USER_INFO,Config::encrypt());
+        $data = curlPost($this->config->cur_url.Config::API_USER_INFO,$this->config->encrypt());
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
@@ -250,7 +240,7 @@ class IndexService implements IndexTemplate
      */
     public function soonOrder($param)
     {
-        $data = curlPost(Config::CUR_URL.Config::API_ORDER_SOON_ORDER,Config::encrypt($param));
+        $data = curlPost($this->config->cur_url.Config::API_ORDER_SOON_ORDER,$this->config->encrypt($param));
 //        if($data['code'] !== 200){
 //            $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';

@@ -9,12 +9,6 @@ namespace App\Server\moive;
  */
 interface IndexTemplate
 {
-    /**
-     * 验证sign
-     * @return bool
-     * @author: DHF
-     */
-    public function getsign();
 
     /**
      * 获取城市列表

@@ -26,6 +26,8 @@ class AuthService extends BaseService
      */
     public function login(int $uid,int $wx_id)
     {
+        pre($uid);
+        pre($wx_id);
         if($this->getUser('uid') == $uid){
             return true;
         }

@@ -1,6 +1,9 @@
 <?php
 
-namespace App\Server\moive\taototo;
+namespace App\Server\moive\shoutu;
+
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Annotation\Inject;
 
 /**
  * 电影接口配置文件
@@ -11,6 +14,12 @@ namespace App\Server\moive\taototo;
  */
 class Config
 {
+    /**
+     * @Inject
+     * @var ConfigInterface
+     */
+    protected $config;
+
     CONST GET_SIGN = 'api/sign/getSign'; //获取签名(仅支持测试环境)
     CONST GET_CITY_LIST = 'movieapi/movie-info/get-city-list'; //获取城市列表
     const GET_CITY_AREA = 'movieapi/movie-info/get-city-area'; //城市下区域列表
@@ -27,27 +36,34 @@ class Config
     const API_ORDER_QUERY = 'api/order/query'; //订单查询
     const API_USER_INFO = 'api/user/info'; //查看账户余额
     const API_ORDER_SOON_ORDER = 'api/order/create-soon-order'; //秒出单
-
     /**
      *
      * @author: DHF
      * @var string 测试环境地址
      */
-    CONST CUR_URL='http://movieapi-test.taototo.cn/';
+    public $cur_url = '';
 
     /**
      *
      * @author: DHF
      * @var string 加解密的密钥
      */
-    CONST APPKEY='10000000000';
+    private $appkey = '';
 
     /**
      *
      * @author: DHF
      * @var string appSecret
      */
-    CONST APPSECRET = '25f9e794323b453885f5181f1b624d0b';
+    private $appsecret = '';
+
+
+    public function __construct()
+    {
+        $this->cur_url = $this->config->get('moive.shoutu.host');
+        $this->appkey = $this->config->get('moive.shoutu.appkey');
+        $this->appsecret = $this->config->get('moive.shoutu.appsecret');
+    }
 
     /**
      * 加密
@@ -55,9 +71,9 @@ class Config
      * @return array
      * @author: DHF
      */
-    public static function encrypt(array $param = [])
+    public function encrypt(array $param = [])
     {
-        $param['appKey'] = self::APPKEY;
+        $param['appKey'] = $this->appkey;
         empty($param['time']) && $param['time'] = time();
         //按键名升序排序
         ksort($param);
@@ -65,7 +81,7 @@ class Config
         foreach ($param as $key => $value){
             $arr[]="{$key}={$value}";
         }
-        $param['sign'] = md5(implode("&",$arr).'&appSecret='.self::APPSECRET);
+        $param['sign'] = md5(implode("&",$arr).'&appSecret='.$this->appsecret);
         return $param;
     }
 

@@ -9,7 +9,7 @@ namespace App\Server\moive;
  */
 class MoiveService
 {
-    const FACTORY = 'taototo'; //默认仓库
+    const FACTORY = 'shoutu'; //默认仓库
 
     /**
      * 获取仓库模型

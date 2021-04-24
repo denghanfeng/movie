@@ -11,11 +11,11 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
-use App\Log;
 use App\Services\CinemaService;
 use App\Services\OrderService;
 use App\Services\PayService;
 use App\Task\CrontabTask;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 
@@ -34,13 +34,11 @@ class NotifyController extends AbstractController
      * @var PayService
      */
     protected $payService;
-
     /**
      * @Inject()
      * @var CinemaService
      */
     protected $cinemaService;
-
 
     /**
      * 下单回调
