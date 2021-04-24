@@ -33,7 +33,6 @@ class CrontabTask
     {
         $this->updateCitys();
         $this->updateCityArea();
-        $this->updateFilme();
         $this->delShow();
     }
 
@@ -78,7 +77,7 @@ class CrontabTask
 
     /**
      * 同步电影院
-     * @Crontab(rule="0 0 1 * * *", memo="updateAll")
+     * @Crontab(rule="0 0 1 * * *", memo="updateCinema")
      * @return bool
      * @author: DHF 2021/4/14 15:44
      */
@@ -111,6 +110,7 @@ class CrontabTask
 
     /**
      * 同步电影信息
+     * @Crontab(rule="0 30 0 * * *", memo="updateFilme")
      * @return bool
      * @author: DHF 2021/4/20 17:15
      */
@@ -154,7 +154,8 @@ class CrontabTask
         if(!$schedule_list = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
         }
-        $today = date("Y-m-d");
+        $this->logger->alert(json_encode($schedule_list));
+        $today = date("Y-m-d H:i:s");
         foreach ($schedule_list as $schedule){
             if(!in_array($schedule['showId'],$show_id_list) && $schedule['showTime'] >= $today){
                 $schedule['cinemaId'] = $cinemaId;
