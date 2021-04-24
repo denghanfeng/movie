@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Model\Order;
+use App\Model\User;
 use App\Task\CrontabTask;
 use Hyperf\Di\Annotation\Inject;
 use RuntimeException;
@@ -51,6 +52,9 @@ class OrderService extends BaseService
         $param['language'] = $show->language;
         $param['planType'] = $show->planType;
 
+        if(!empty($param['reservedPhone'])){
+            $this->authService->updateUser(['phone'=>$param['reservedPhone']]);
+        }
         if(!$Order = Order::createById($param)){
             throw new RuntimeException('订单保存失败',2004);
         };

@@ -9,8 +9,6 @@ use RuntimeException;
 
 class AuthService extends BaseService
 {
-    public static $user;
-
     /**
      * @Inject()
      * @var \Hyperf\Contract\SessionInterface
@@ -26,8 +24,6 @@ class AuthService extends BaseService
      */
     public function login(int $uid,int $wx_id)
     {
-        pre($uid);
-        pre($wx_id);
         if($this->getUser('uid') == $uid){
             return true;
         }
@@ -70,6 +66,22 @@ class AuthService extends BaseService
                     return in_array($key,$keys);
                 });
         }
+    }
+
+    /**
+     * 更新数据
+     * @param $data
+     * @return bool
+     * @author: DHF 2021/4/24 17:47
+     */
+    public function updateUser($data)
+    {
+        if(!$user =User::find($this->getUser('uid'))){
+            throw new RuntimeException('用户已退出',2003);
+        };
+        $user->update($data);
+        $this->session->set('user', $user->toArray());
+        return true;
     }
 
 }

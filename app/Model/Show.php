@@ -27,7 +27,8 @@ class Show extends Model
     protected $table = 'shows';
     protected $primaryKey = 'showId';
     public $timestamps = false;
-    public $incrementing = false; //主键不为int型
+    public $incrementing = false;
+    //主键不为int型
     /**
      * The attributes that are mass assignable.
      *

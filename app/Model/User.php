@@ -12,6 +12,7 @@ namespace App\Model;
  * @property string $unionid unionid
  * @property int $wx_id 公众号ID
  * @property int $accounts_id 关联的账户Id
+ * @property string $phone 默认手机号
  */
 class User extends Model
 {
@@ -33,7 +34,7 @@ class User extends Model
      *
      * @var array
      */
-    protected $fillable = ['uid', 'nickname', 'headimgurl', 'openid', 'mini_openid', 'unionid', 'wx_id', 'accounts_id'];
+    protected $fillable = ['uid', 'nickname', 'headimgurl', 'openid', 'mini_openid', 'unionid', 'wx_id', 'accounts_id', 'phone'];
     /**
      * The attributes that should be cast to native types.
      *
