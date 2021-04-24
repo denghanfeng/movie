@@ -33,7 +33,7 @@ class CrontabTask
     {
         $this->updateCitys();
         $this->updateCityArea();
-        $this->updateCinema();
+        $this->updateFilme();
         $this->delShow();
     }
 
@@ -78,6 +78,7 @@ class CrontabTask
 
     /**
      * 同步电影院
+     * @Crontab(rule="0 0 1 * * *", memo="updateAll")
      * @return bool
      * @author: DHF 2021/4/14 15:44
      */
@@ -109,7 +110,6 @@ class CrontabTask
     }
 
     /**
-     * @Crontab(rule="0 0 1 * * *", memo="updateAll")
      * 同步电影信息
      * @return bool
      * @author: DHF 2021/4/20 17:15
