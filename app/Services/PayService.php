@@ -42,6 +42,8 @@ class PayService extends BaseService
         }
         $info = curlPost($this->post_url,$this->post_data);
         if(!isset($info['code']) || $info['code'] !== 200){
+            $info['message'] = $info['message'] ?? '调用失败';
+            $info['code'] = $info['code'] ?? 404;
             throw new RuntimeException($info['message'],$info['code']);
         }
         return $info['data'];
