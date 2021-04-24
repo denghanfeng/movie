@@ -22,7 +22,9 @@ class IndexService implements IndexTemplate
         $param['appKey'] = Config::APPKEY;
         $param['time'] = time();
         $data = curlPost(Config::CUR_URL.Config::GET_SIGN,$param);
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['sign'] == Config::encrypt($param)['sign'];
@@ -37,7 +39,9 @@ class IndexService implements IndexTemplate
     public function getCityList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_CITY_LIST,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -52,7 +56,9 @@ class IndexService implements IndexTemplate
     public function getCityAreaList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_CITY_AREA,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -67,7 +73,9 @@ class IndexService implements IndexTemplate
     public function getCinemaList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_CINEMA_LIST,Config::encrypt($param));
-        if(!$data || $data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -82,7 +90,9 @@ class IndexService implements IndexTemplate
     public function getHotList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_HOT_LIST,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -97,7 +107,9 @@ class IndexService implements IndexTemplate
     public function getSoonList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_SOON_LIST,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -112,7 +124,9 @@ class IndexService implements IndexTemplate
     public function getScheduleList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_SCHEDULE_LIST,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -127,7 +141,9 @@ class IndexService implements IndexTemplate
     public function getSeat(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_SEAT,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['seatData'];
@@ -142,7 +158,9 @@ class IndexService implements IndexTemplate
     public function getShowList(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_SHOW_LIST,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['list'];
@@ -157,7 +175,9 @@ class IndexService implements IndexTemplate
     public function getShowDate(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::GET_SHOW_DATE,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data']['dateList'];
@@ -171,7 +191,9 @@ class IndexService implements IndexTemplate
     public function createOrder(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::API_ORDER_CREATE,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return true;
@@ -185,8 +207,7 @@ class IndexService implements IndexTemplate
      */
     public function orderHandle(array $param = [])
     {
-        $data = curlPost(Config::CUR_URL.Config::API_AUTOMATION_ORDERHANDLE,Config::encrypt($param));
-        return $data['code'] === 200;
+        return curlPost(Config::CUR_URL.Config::API_AUTOMATION_ORDERHANDLE,Config::encrypt($param));
     }
 
     /**
@@ -198,7 +219,9 @@ class IndexService implements IndexTemplate
     public function orderQuery(array $param = [])
     {
         $data = curlPost(Config::CUR_URL.Config::API_ORDER_QUERY,Config::encrypt($param));
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data'];
@@ -212,7 +235,9 @@ class IndexService implements IndexTemplate
     public function userInfo()
     {
         $data = curlPost(Config::CUR_URL.Config::API_USER_INFO,Config::encrypt());
-        if($data['code'] !== 200){
+        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
             throw new OutOfBoundsException($data['message'],$data['code']);
         }
         return $data['data'];
@@ -227,7 +252,9 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost(Config::CUR_URL.Config::API_ORDER_SOON_ORDER,Config::encrypt($param));
 //        if($data['code'] !== 200){
-//            throw new OutOfBoundsException($data['message'],$data['code']);
+//            $data['message'] = $data['message'] ?? '访问失败';
+            $data['code'] = $data['code'] ?? '404';
+            throw new OutOfBoundsException($data['message'],$data['code']);
 //        }
 //        return $data['data'];
     }

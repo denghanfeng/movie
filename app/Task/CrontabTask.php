@@ -35,6 +35,7 @@ class CrontabTask
         $this->updateCityArea();
         $this->updateCinema();
         $this->updateFilme();
+        $this->delShow();
     }
 
     /**
@@ -47,9 +48,10 @@ class CrontabTask
         if(!$city_list = $this->moiveService->create()->getCityList()){
             return false;
         };
+        $city_is_list = City::all()->pluck('cityId')->toArray();
         foreach ($city_list as $city){
             $where['cityId'] = $city['cityId'];
-            City::updateOrCreate($where, $city);
+            in_array($city['cityId'],$city_is_list) || City::updateOrCreate($where, $city);
         }
         return true;
     }
@@ -63,13 +65,16 @@ class CrontabTask
     {
         $city_list = City::all(['cityId']);
         foreach ($city_list as $city){
-            if(!$city_area_list = $this->moiveService->create()->getCityAreaList(['cityId'=>$city->cityId])){
-                return;
-            };
-            foreach ($city_area_list as $city_area){
-                $city_area['cityId'] = $city->cityId;
-                CityArea::updateOrCreate(['areaId'=>$city_area['areaId']], $city_area);
-            }
+            co(function () use ($city) {
+                if (!$city_area_list = $this->moiveService->create()->getCityAreaList(['cityId' => $city->cityId])) {
+                    return false;
+                };
+                $city_area_id_list = CityArea::where(['cityId' => $city->cityId])->pluck('areaId')->toArray();
+                foreach ($city_area_list as $city_area) {
+                    $city_area['cityId'] = $city->cityId;
+                    in_array($city_area['areaId'], $city_area_id_list) || CityArea::updateOrCreate(['areaId' => $city_area['areaId']], $city_area);
+                }
+            });
         }
         return true;
     }
@@ -89,10 +94,11 @@ class CrontabTask
                 if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
                     return;
                 };
+                $cinema_id_list = Cinema::where(['cityId'=>$city->cityId])->pluck('cinemaId')->toArray();
                 foreach ($cinema_list as $cinema){
                     $cinema['cityId'] = $city->cityId;
                     $cinema['areaId'] = $city_area_list[$cinema['regionName']] ?? 0;
-                    Cinema::updateOrCreate(['cinemaId'=>$cinema['cinemaId']], $cinema);
+                    in_array($cinema['cinemaId'],$cinema_id_list) || Cinema::updateOrCreate(['cinemaId'=>$cinema['cinemaId']], $cinema);
                 }
             });
         }
@@ -143,8 +149,9 @@ class CrontabTask
         if(!$schedule_list = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
         }
+        $today = date("Y-m-d");
         foreach ($schedule_list as $schedule){
-            if(!in_array($schedule['showId'],$show_id_list)){
+            if(!in_array($schedule['showId'],$show_id_list) && $schedule['showTime'] >= $today){
                 $schedule['cinemaId'] = $cinemaId;
                 $show = Show::updateOrCreate(['showId'=>$schedule['showId']], $schedule);
                 //如果指定更新则更新后直接退出
@@ -154,5 +161,19 @@ class CrontabTask
             }
         }
         return !$showId;
+    }
+
+    /**
+     * 清除今日之前数据
+     * @author: DHF 2021/4/24 11:17
+     */
+    public function delShow($limit = 1000)
+    {
+        $today = date("Y-m-d");
+        $delect_ids = Show::where('showTime','<',$today)->limit($limit)->pluck('showId');
+        Show::destroy($delect_ids);
+        if(count($delect_ids) == $limit){
+            $this->delShow();
+        };
     }
 }

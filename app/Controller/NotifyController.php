@@ -76,6 +76,7 @@ class NotifyController extends AbstractController
     public function all()
     {
         (new CrontabTask)->updateAll();
+        return $this->success();
     }
 
     public function orderHandle(){

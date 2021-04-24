@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Log;
 use App\Model\Cinema;
 use App\Model\City;
 use App\Model\CityArea;
@@ -35,7 +36,9 @@ class CinemaService extends BaseService
 
     public function orderHandle($param):array
     {
-        return $this->moiveService->create()->orderHandle($param);
+        $aa =  $this->moiveService->create()->orderHandle($param);
+        Log::get()->debug(json_encode($aa));
+        return $aa;
     }
 
     public function orderQuery($param):array
@@ -43,9 +46,9 @@ class CinemaService extends BaseService
         return $this->moiveService->create()->orderQuery($param);
     }
 
-    public function userInfo($param):array
+    public function userInfo():array
     {
-        return $this->moiveService->create()->userInfo($param);
+        return $this->moiveService->create()->userInfo();
     }
 
 }
