@@ -15,7 +15,6 @@ use App\Services\CinemaService;
 use App\Services\OrderService;
 use App\Services\PayService;
 use App\Task\CrontabTask;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
 

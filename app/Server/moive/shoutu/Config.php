@@ -60,9 +60,9 @@ class Config
 
     public function __construct()
     {
-        $this->cur_url = $this->config->get('moive.shoutu.host');
-        $this->appkey = $this->config->get('moive.shoutu.appkey');
-        $this->appsecret = $this->config->get('moive.shoutu.appsecret');
+        $this->cur_url = getenv('SHOUTU_MOIVE_URL');
+        $this->appkey = getenv('SHOUTU_MOIVE_APPKEY');
+        $this->appsecret = getenv('SHOUTU_MOIVE_APPSECRET');
     }
 
     /**
