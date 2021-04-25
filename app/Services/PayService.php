@@ -41,9 +41,6 @@ class PayService extends BaseService
                 break;
         }
         $info = curlPost($this->post_url,$this->post_data);
-        $this->logger->alert($this->post_url);
-        $this->logger->alert(json_encode($this->post_data));
-        $this->logger->alert(json_encode($info));
         if(!isset($info['code']) || $info['code'] !== 200){
             $info['message'] = $info['message'] ?? '调用失败';
             $info['code'] = $info['code'] ?? 404;

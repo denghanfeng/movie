@@ -100,7 +100,6 @@ class CrontabTask
                 foreach ($cinema_list as $cinema) {
                     $cinema['cityId'] = $city->cityId;
                     $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
-                    $cinema['cityId'] == 8 && $this->logger->alert(json_encode($cinema));
                     in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
                 }
             });

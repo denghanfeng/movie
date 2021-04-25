@@ -37,7 +37,6 @@ class OrderTask extends BasickTask
         $order_data['seat'] = $Order->seat; //座位 用户所选的座位，例：1排1座,1排2座 以英文的逗号 “ , “隔开。 如果座位是情侣座，请传入 ： 1排1座(情侣座),1排2座(情侣座)
         $order_data['acceptChangeSeat'] = $Order->acceptChangeSeat; //调座
         $order_data['reservedPhone'] = $Order->reservedPhone; //预留手机号
-        $this->logger->alert(json_encode($order_data));
         if(!$this->moiveService->create()->createOrder($order_data)){
             throw new OverflowException("下单失败请重新下单 thirdOrderId={$thirdOrderId}",4423);
         };
