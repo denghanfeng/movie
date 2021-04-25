@@ -63,7 +63,7 @@ class PayService extends BaseService
         $this->post_data['action_order_id'] = $this->order->thirdOrderId;
         $this->post_data['body'] = $this->order->cinema->cinemaName.'--'.$this->order->filme->name;
         $this->post_data['action'] = self::ACTION;
-        $this->post_data['total_fee'] = 101;//$this->order->initPrice; 沙箱测试固定值
+        $this->post_data['total_fee'] = 0.01;//$this->order->initPrice; 沙箱测试固定值
 
         $this->post_url = env('YZ_DOMAIN').self::WX_MP_PAY_API;
     }
