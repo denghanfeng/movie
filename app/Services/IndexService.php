@@ -128,7 +128,7 @@ class IndexService extends BaseService
 
         $now = date("Y-m-d H:i:s");
         //排期时间筛选
-        $show_list = Show::where(['cinemaId'=>$cinemaId,'filmId'=>$filmId])->where('showTime','>',$now)->pluck('showTime')->toArray();
+        $show_list = Show::where(['cinemaId'=>$cinemaId,'filmId'=>$filmId])->where('stopSellTime','>',$now)->pluck('showTime')->toArray();
         $dates = [];
 
         foreach ($show_list as $show){
@@ -243,7 +243,7 @@ class IndexService extends BaseService
     public function getSchedule($cinemaId,$filmId,$date):array
     {
         $Show = Show::where('cinemaId',$cinemaId)
-            ->where('showTime','>',date("Y-m-d H:i:s"));
+            ->where('stopSellTime','>',date("Y-m-d H:i:s"));
         $filmId && $Show->where('filmId',$filmId);
         $date && $Show->whereBetween('showTime', [$date,date("Y-m-d", strtotime('+1 day',strtotime($date)))]);
         return $Show->get()->toArray();

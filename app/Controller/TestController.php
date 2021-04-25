@@ -49,7 +49,7 @@ class TestController extends AbstractController
         return $this->success($this->moiveService->create()->getCinemaList(['cityId'=>$cityId]));
     }
 
-    public function Schedule(){
+    public function schedule(){
         $cinemaId = $this->request->input('cinemaId', 70);
         return $this->success($this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId]));
     }
