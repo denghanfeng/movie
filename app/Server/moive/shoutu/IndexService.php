@@ -2,6 +2,7 @@
 namespace App\Server\moive\shoutu;
 
 use App\Server\moive\IndexTemplate;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use OutOfBoundsException;
 
@@ -14,6 +15,11 @@ use OutOfBoundsException;
 class IndexService implements IndexTemplate
 {
 
+    /**
+     * @Inject()
+     * @var StdoutLoggerInterface
+     */
+    protected $logger;
     /**
      * @Inject
      * @var Config
