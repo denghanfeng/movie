@@ -49,6 +49,11 @@ class TestController extends AbstractController
         return $this->success($this->moiveService->create()->getCinemaList(['cityId'=>$cityId]));
     }
 
+    public function Schedule(){
+        $cinemaId = $this->request->input('cinemaId', 70);
+        return $this->success($this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId]));
+    }
+
     public function city(){
         return $this->success($this->moiveService->create()->getCityList());
     }
@@ -59,6 +64,11 @@ class TestController extends AbstractController
     }
 
     public function seat(){
+        $showId = $this->request->input('showId', 866073168);
+        return $this->success($this->moiveService->create()->getSeat(['showId'=>$showId]));
+    }
+
+    public function show(){
         $showId = $this->request->input('showId', 866073168);
         return $this->success($this->moiveService->create()->getSeat(['showId'=>$showId]));
     }

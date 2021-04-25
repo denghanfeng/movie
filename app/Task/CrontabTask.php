@@ -154,7 +154,6 @@ class CrontabTask
         if(!$schedule_list = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
         }
-        $this->logger->alert(json_encode($schedule_list));
         $today = date("Y-m-d H:i:s");
         foreach ($schedule_list as $schedule){
             if(!in_array($schedule['showId'],$show_id_list) && $schedule['showTime'] >= $today){
