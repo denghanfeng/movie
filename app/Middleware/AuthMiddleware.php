@@ -44,19 +44,24 @@ class AuthMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $query_params = $request->getQueryParams();
+        $headers_params = $request->getHeaders();
+        $body_params = $request->getParsedBody();
+        $headers_params = array_map(function ($header){
+            return $header[0] ?? '';
+        },$headers_params);
+        $params = array_merge($headers_params,$query_params,$body_params);
         $validator = $this->validationFactory->make(
-            $query_params,
+            $params,
             [
                 'openid' => 'required',
-                'wx_id' => 'required|integer',
+                'wx_id' => 'required',
             ]
         );
 
         if ($validator->fails()){
             throw new OutOfBoundsException($validator->errors()->first(),2001);
         }
-
-        $this->authService->login((int)base64_decode($query_params['openid']),(int)$query_params['wx_id']);
+        $this->authService->login((int)base64_decode($params['openid']),(int)$params['wx_id']);
 
         return $handler->handle($request);
     }
