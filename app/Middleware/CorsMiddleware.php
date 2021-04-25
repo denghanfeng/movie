@@ -27,7 +27,7 @@ class CorsMiddleware implements MiddlewareInterface
             ->withHeader('Access-Control-Allow-Credentials', 'true')
             // Headers 可以根据实际情况进行改写。
             ->withHeader('Access-Control-Allow-Headers', 'DNT,Keep-Alive,User-Agent,Cache-Control,Content-Type,Authorization,wx_id,openid,token');
-        $this->logger->alert(' CorsMiddleware '.__LINE__);
+
         Context::set(ResponseInterface::class, $response);
 
         if ($request->getMethod() == 'OPTIONS') {
