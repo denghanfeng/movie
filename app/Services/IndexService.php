@@ -101,11 +101,13 @@ class IndexService extends BaseService
         $Cinema = Cinema::where('cityId',$cityId);
         $areaId && $Cinema->where('areaId',$areaId);
         $max_id && $Cinema->where('cinemaId','<',$max_id);
-        return $Cinema
+        $data['count'] = $Cinema->count();
+        $data['list'] = $Cinema
             ->limit(10)
             ->orderBy('cinemaId','desc')
             ->get(['cinemaId', 'cityId', 'cinemaName', 'address', 'latitude', 'longitude', 'phone', 'regionName', 'isAcceptSoonOrder'])
             ->toArray();
+        return $data;
     }
 
     /**

@@ -92,7 +92,7 @@ class PayService extends BaseService
      */
     public function notify($param)
     {
-        return ApplicationContext::getContainer()->get(OrderTask::class)->create($param['order_id']);
+        //return ApplicationContext::getContainer()->get(OrderTask::class)->create($param['order_id']);
     }
 
 }
