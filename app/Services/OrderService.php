@@ -140,6 +140,32 @@ class OrderService extends BaseService
     }
 
     /**
+     * 接口获取订单信息
+     * @param array $param
+     * @return mixed
+     * @author: DHF 2021/4/26 14:22
+     */
+    public function apiList($param = [])
+    {
+        $param['limit'] = isset($param['limit']) && $param['limit'] < 1000 && $param['limit'] > 0 ? $param['limit'] : 1000;
+        $param['page'] = $param['page'] ?? 1;
+
+        $order = Order::where('orderStatus','>',Order::STATUS_START);
+        empty($param['orderStatus']) || $order->where('orderStatus',$param['orderStatus']);
+        empty($param['uid']) || $order->where('uid',$param['uid']);
+        empty($param['start_updated_at']) || $order->where('updated_at','>',$param['start_updated_at']);
+        empty($param['end_updated_at']) || $order->where('updated_at','<',$param['end_updated_at']);
+        $param['count'] = $order->count();
+        $param['list'] = $order
+            ->orderBy('thirdOrderId','desc')
+            ->limit($param['limit'])
+            ->offset(($param['page'] - 1)*$param['limit'])
+            ->get()
+            ->toArray();
+        return $param;
+    }
+
+    /**
      * 订单回调
      * @param $param
      * @author: DHF 2021/4/21 15:36
