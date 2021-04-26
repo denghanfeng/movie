@@ -136,6 +136,7 @@ class OrderService extends BaseService
                 return $query->select(['filmId','name','pic']);
             },
         ]);
+        $orderStatus = $orderStatus == 4 ? [4,5,10] : $orderStatus;
         $orderStatus && $order->where('orderStatus',$orderStatus);
         $max_id && $order->where('thirdOrderId','<=',$max_id);
         $count = $order->count();
