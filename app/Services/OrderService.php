@@ -147,6 +147,7 @@ class OrderService extends BaseService
         $list = $order
             ->orderBy('thirdOrderId','desc')
             ->get([
+                'filmId',
                 'seat',
                 'reservedPhone',
                 'acceptChangeSeat',
