@@ -161,13 +161,14 @@ class IndexService extends BaseService
     public function getSeat($showId):array
     {
         $seat_list =  $this->moiveService->create()->getSeat(['showId'=>$showId]);
-        if(isset($seat_list['seats'])){
-            foreach ($seat_list['seats'] as &$seat){
-                list($columnNo,$rowNo) = explode("排",$seat['seatNo']);
-                $seat['columnNo'] = checkNatInt($columnNo);
-                $seat['rowNo'] = checkNatInt($rowNo);
-            }
-        }
+        //座位参数正常可以显示
+//        if(isset($seat_list['seats'])){
+//            foreach ($seat_list['seats'] as &$seat){
+//                list($columnNo,$rowNo) = explode("排",$seat['seatNo']);
+//                $seat['columnNo'] = checkNatInt($columnNo);
+//                $seat['rowNo'] = checkNatInt($rowNo);
+//            }
+//        }
         return $seat_list;
     }
 
