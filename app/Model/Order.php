@@ -42,7 +42,7 @@ use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
 class Order extends Model
 {
     //支付比例
-    const PAY_BILI = 0.85;
+    const PAY_BILI = 0.9;
 
     const TEST_APP_KEY = 100;
     //创建订单
