@@ -116,7 +116,8 @@ class OrderService extends BaseService
         }]);
         $orderStatus && $order->where('orderStatus',$orderStatus);
         $max_id && $order->where('thirdOrderId','<=',$max_id);
-        return $order
+        $count = $order->count();
+        $list = $order
             ->orderBy('thirdOrderId','desc')
             ->get([
                 'seat',
@@ -132,6 +133,10 @@ class OrderService extends BaseService
                 'cinemaId'
             ])
             ->toArray();
+        return [
+            'count'=>$count,
+            'list'=>$list,
+        ];
     }
 
     /**
