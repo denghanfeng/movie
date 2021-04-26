@@ -7,6 +7,7 @@ use App\Server\moive\MoiveService;
 use App\Task\CrontabTask;
 use Hyperf\Di\Annotation\Inject;
 use RuntimeException;
+use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
 
 class OrderService extends BaseService
 {
@@ -77,9 +78,7 @@ class OrderService extends BaseService
         if(!$ref = $this->payService->index($Order)){
             return false;
         };
-        $this->logger->alert($Order->thirdOrderId);
-        $ref['thirdOrderId'] = $Order->thirdOrderId;
-        $this->logger->alert(json_encode($ref));
+        $ref['thirdOrderId'] = (string)$Order->thirdOrderId;
         return $ref;
     }
 

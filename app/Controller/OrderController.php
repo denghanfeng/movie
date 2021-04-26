@@ -50,9 +50,7 @@ class OrderController extends AbstractController
         ]);
         $param = $this->request->all();
 
-        $ordr = $this->orderService->create($param);
-        $this->logger->alert(json_encode($ordr));
-        return $this->success($ordr);
+        return $this->success($this->orderService->create($param));
     }
 
     /**
