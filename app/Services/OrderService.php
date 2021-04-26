@@ -135,7 +135,6 @@ class OrderService extends BaseService
      */
     public function list(int $orderStatus,int $max_id)
     {
-        var_dump($orderStatus);
         $order = Order::with([
             'cinema'=>function($query){
                 return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
