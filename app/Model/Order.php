@@ -35,11 +35,15 @@ use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
  * @property \Carbon\Carbon $created_at 
  * @property \Carbon\Carbon $updated_at 
  * @property string $pid 渠道ID
+ * @property int $payPrice 支付金额：分
  * @property-read \App\Model\Cinema $cinema 
  * @property-read \App\Model\Filme $filme 
  */
 class Order extends Model
 {
+    //支付比例
+    const PAY_BILI = 0.85;
+
     const TEST_APP_KEY = 100;
     //创建订单
     const STATUS_START = -1;
@@ -67,13 +71,13 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at', 'pid'];
+    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at', 'pid', 'payPrice'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['thirdOrderId' => 'integer', 'uid' => 'integer', 'cinemaId' => 'integer', 'filmId' => 'integer', 'orderStatus' => 'integer', 'initPrice' => 'integer', 'orderPrice' => 'integer', 'orderNum' => 'integer', 'payType' => 'integer', 'acceptChangeSeat' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['thirdOrderId' => 'integer', 'uid' => 'integer', 'cinemaId' => 'integer', 'filmId' => 'integer', 'orderStatus' => 'integer', 'initPrice' => 'integer', 'orderPrice' => 'integer', 'orderNum' => 'integer', 'payType' => 'integer', 'acceptChangeSeat' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'payPrice' => 'integer'];
     /**
      * 影院信息
      * @return \Hyperf\Database\Model\Relations\HasOne

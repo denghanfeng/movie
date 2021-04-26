@@ -61,7 +61,7 @@ class PayService extends BaseService
         $this->post_data['action_order_id'] = $this->order->thirdOrderId;
         $this->post_data['body'] = $this->order->cinema->cinemaName.'--'.$this->order->filme->name;
         $this->post_data['action'] = self::ACTION;
-        $this->post_data['total_fee'] = $this->order->appKey == Order::TEST_APP_KEY ? 1 : $this->order->initPrice;
+        $this->post_data['total_fee'] = $this->order->appKey == Order::TEST_APP_KEY ? 1 : $this->order->payPrice;
     }
 
     /**

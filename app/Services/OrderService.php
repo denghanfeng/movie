@@ -61,6 +61,7 @@ class OrderService extends BaseService
         $param['orderStatus'] = Order::STATUS_START;
         $param['orderNum'] = count(explode(",",$param['seat']));
         $param['initPrice'] = $show->netPrice;
+        $param['payPrice'] = ceil($show->netPrice * Order::PAY_BILI);
         $param['hallName'] = $show->hallName;
         $param['showTime'] = $show->showTime;
         $param['showVersionType'] = $show->showVersionType;
@@ -91,10 +92,16 @@ class OrderService extends BaseService
      */
     public function one(int $thirdOrderId)
     {
-        return Order::with(['cinema'=>function($query){
-            return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
-        }])->select([
+        return Order::with([
+            'cinema'=>function($query){
+                return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
+            },
+            'filme'=>function($query){
+                return $query->select(['filmId','name','pic']);
+            },
+        ])->select([
             'seat',
+            'filmId',
             'cinemaId',
             'reservedPhone',
             'acceptChangeSeat',
@@ -105,6 +112,8 @@ class OrderService extends BaseService
             'showVersionType',
             'language',
             'planType',
+            'initPrice',
+            'orderPrice',
         ])->where(['thirdOrderId'=>$thirdOrderId])->first();
     }
 
@@ -213,5 +222,15 @@ class OrderService extends BaseService
         }
 
         return $data;
+    }
+
+
+    public function refund($thirdOrderId)
+    {
+        $order = Order::find($thirdOrderId);
+        if($order->orderStatus != Order::STATUS_PAY){
+            return [];
+        }
+        return [];
     }
 }

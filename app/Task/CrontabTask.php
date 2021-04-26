@@ -5,6 +5,7 @@ use App\Model\Cinema;
 use App\Model\City;
 use App\Model\CityArea;
 use App\Model\Filme;
+use App\Model\Order;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -157,6 +158,7 @@ class CrontabTask
         foreach ($schedule_list as $schedule){
             if(!in_array($schedule['showId'],$show_id_list) && $schedule['showTime'] >= $today){
                 $schedule['cinemaId'] = $cinemaId;
+                $schedule['payPrice'] = ceil($schedule['netPrice'] * Order::PAY_BILI);
                 $show = Show::updateOrCreate(['showId'=>$schedule['showId']], $schedule);
                 //如果指定更新则更新后直接退出
                 if($showId && $showId == $schedule['showId']) {

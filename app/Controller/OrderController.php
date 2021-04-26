@@ -82,4 +82,15 @@ class OrderController extends AbstractController
         $max_id = $this->request->input('max_id');
         return $this->success($this->orderService->list((int)$orderStatus,(int)$max_id));
     }
+
+
+    public function refund()
+    {
+        $this->validated([
+            'thirdOrderId' => 'required|integer',
+        ]);
+        $thirdOrderId = $this->request->input('thirdOrderId');
+        return $this->success($this->orderService->refund((int)$thirdOrderId));
+    }
+
 }
