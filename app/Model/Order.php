@@ -50,7 +50,7 @@ class Order extends Model
     //已出票待结算
     const STATUS_WAIT_STATEMENT = 4;
     //已结算
-    const STATUS_STATEMENT = 4;
+    const STATUS_STATEMENT = 5;
     //订单关闭
     const STATUS_END = 10;
     /**

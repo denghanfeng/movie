@@ -81,5 +81,12 @@ interface IndexTemplate
      * @author: DHF
      */
     public function getShowDate(array $param = []);
+    /**
+     * 验证sign
+     * @param $param
+     * @return bool
+     * @author: DHF 2021/4/26 11:53
+     */
+    public function notify($param):bool;
 
 }

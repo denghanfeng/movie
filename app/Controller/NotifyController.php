@@ -48,6 +48,11 @@ class NotifyController extends AbstractController
     {
         $param = $this->request->all();
         $this->logger->alert(json_encode($param));
+        $this->validated([
+            'thirdOrderId' => 'required',
+            'channel' => 'required',
+            'sign' => 'required',
+        ]);
         return $this->response->json([
             'code' => 200,
             'message' => '请求成功',

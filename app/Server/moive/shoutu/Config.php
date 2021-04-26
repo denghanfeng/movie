@@ -75,14 +75,25 @@ class Config
     {
         $param['appKey'] = $this->appkey;
         empty($param['time']) && $param['time'] = time();
+        $param['sign'] = $this->getSign($param);
+        return $param;
+    }
+
+    /**
+     * 获取加密sign
+     * @param $param
+     * @return string
+     * @author: DHF 2021/4/26 11:52
+     */
+    public function getSign($param)
+    {
         //按键名升序排序
         ksort($param);
         $arr = [];
         foreach ($param as $key => $value){
             $arr[]="{$key}={$value}";
         }
-        $param['sign'] = md5(implode("&",$arr).'&appSecret='.$this->appsecret);
-        return $param;
+        return  md5(implode("&",$arr).'&appSecret='.$this->appsecret);
     }
 
 }

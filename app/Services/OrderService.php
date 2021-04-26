@@ -3,6 +3,7 @@ namespace App\Services;
 
 use App\Model\Order;
 use App\Model\User;
+use App\Server\moive\MoiveService;
 use App\Task\CrontabTask;
 use Hyperf\Di\Annotation\Inject;
 use RuntimeException;
@@ -14,7 +15,11 @@ class OrderService extends BaseService
      * @var AuthService
      */
     protected $authService;
-
+    /**
+     * @Inject()
+     * @var MoiveService
+     */
+    protected $moiveService;
     /**
      * @Inject()
      * @var PayService
@@ -139,10 +144,37 @@ class OrderService extends BaseService
         if(!$Order = Order::find($param['thirdOrderId'])){
             throw new RuntimeException('订单查询失败',2007);
         };
-        if(!$Order->update($param)){
+        $channel = $param['channel'];
+        unset($param['channel']);
+        if(!$this->moiveService->create($channel)->notify($param)){
+            throw new RuntimeException('验证不通过',2008);
+        };
+        if(!$Order->update($this->notifyData($param))){
             throw new RuntimeException('订单保存失败',2004);
         };
         return true;
     }
 
+    /**
+     * 生成订单数据
+     * @param $param
+     * @return array
+     * @author: DHF 2021/4/26 11:56
+     */
+    public function notifyData($param)
+    {
+        $data = [];
+        switch ($param['eventName'])
+        {
+            case 'TICKET_SUCCESS':
+                $data['orderStatus'] = Order::STATUS_WAIT_STATEMENT;
+                $data['ticketCode'] = $param['ticketCode'];
+                $data['ticketImage'] = $param['ticketImage'];
+                $data['ticketTime'] = date("Y-m-d H:i:s");
+                empty($param['realSeat']) || $data['seat'] = $param['realSeat'];
+                break;
+        }
+
+        return $data;
+    }
 }

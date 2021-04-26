@@ -240,6 +240,19 @@ class IndexService implements IndexTemplate
     }
 
     /**
+     * 验证sign
+     * @param $param
+     * @return bool
+     * @author: DHF 2021/4/26 11:53
+     */
+    public function notify($param):bool
+    {
+        $sign = $param['sign'];
+        unset($param['sign']);
+        return $sign == $this->config->getSign($param);
+    }
+
+    /**
      * 秒出单
      * @return false|mixed
      * @author: DHF 2021/3/11 16:14
