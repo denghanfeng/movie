@@ -128,9 +128,14 @@ class OrderService extends BaseService
      */
     public function list(int $orderStatus,int $max_id)
     {
-        $order = Order::with(['cinema'=>function($query){
-            return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
-        }]);
+        $order = Order::with([
+            'cinema'=>function($query){
+                return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
+            },
+            'filme'=>function($query){
+                return $query->select(['filmId','name','pic']);
+            },
+        ]);
         $orderStatus && $order->where('orderStatus',$orderStatus);
         $max_id && $order->where('thirdOrderId','<=',$max_id);
         $count = $order->count();
@@ -149,7 +154,11 @@ class OrderService extends BaseService
                 'planType',
                 'payPrice',
                 'initPrice',
-                'cinemaId'
+                'cinemaId',
+                'payPrice',
+                'initPrice',
+                'ticketCode',
+                'ticketImage',
             ])
             ->toArray();
         return [
