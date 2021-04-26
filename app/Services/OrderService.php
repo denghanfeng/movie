@@ -74,7 +74,11 @@ class OrderService extends BaseService
         if(!$Order = Order::createById($param)){
             throw new RuntimeException('订单保存失败',2004);
         };
-        return $this->payService->index($Order);
+        if(!$ref = $this->payService->index($Order)){
+            return false;
+        };
+        $ref['thirdOrderId'] = $Order->thirdOrderId;
+        return $ref;
     }
 
 
