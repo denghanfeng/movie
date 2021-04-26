@@ -25,7 +25,6 @@ class OrderTask extends BasickTask
      */
     public function create($thirdOrderId)
     {
-
         if(!$Order = Order::where(['thirdOrderId'=>$thirdOrderId,'orderStatus'=>Order::STATUS_PAY])->first()){
             throw new OverflowException("没有找到信息 thirdOrderId={$thirdOrderId}",33061);
         };
@@ -36,12 +35,18 @@ class OrderTask extends BasickTask
         $order_data['seat'] = $Order->seat; //座位 用户所选的座位，例：1排1座,1排2座 以英文的逗号 “ , “隔开。 如果座位是情侣座，请传入 ： 1排1座(情侣座),1排2座(情侣座)
         $order_data['acceptChangeSeat'] = $Order->acceptChangeSeat; //调座
         $order_data['reservedPhone'] = $Order->reservedPhone; //预留手机号
-        $order_data['readyTicketTime'] = date("Y-m-d H:i:s"); //待出票时间
-        $this->logger->alert(json_encode($order_data));
-        if(!$this->moiveService->create()->createOrder($order_data)){
-            throw new OverflowException("下单失败请重新下单 thirdOrderId={$thirdOrderId}",4423);
-        };
 
-        $Order->update(['orderStatus'=>Order::STATUS_ACCEPT]);
+        $this->logger->alert(json_encode($order_data));
+        //测试订单直接略过下单
+        if($Order->appKey != Order::TEST_APP_KEY){
+            if(!$this->moiveService->create()->createOrder($order_data)){
+                throw new OverflowException("下单失败请重新下单 thirdOrderId={$thirdOrderId}",4423);
+            };
+        }
+        $data = [
+            'orderStatus'=>Order::STATUS_ACCEPT,
+            'readyTicketTime'=>date("Y-m-d H:i:s"),//待出票时间
+        ];
+        $Order->update($data);
     }
 }

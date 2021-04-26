@@ -39,6 +39,7 @@ use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
  */
 class Order extends Model
 {
+    const TEST_APP_KEY = 100;
     //创建订单
     const STATUS_START = -1;
     //订单已支付
