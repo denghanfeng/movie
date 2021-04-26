@@ -77,6 +77,7 @@ class OrderService extends BaseService
         if(!$ref = $this->payService->index($Order)){
             return false;
         };
+        $this->logger->alert($Order->thirdOrderId);
         $ref['thirdOrderId'] = $Order->thirdOrderId;
         return $ref;
     }
