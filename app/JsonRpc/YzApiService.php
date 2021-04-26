@@ -44,11 +44,11 @@ AND wx_id = ?
 
     /**
      * 获取订单信息
-     * @param int $out_trade_no
+     * @param string $out_trade_no
      * @return array
      * @author: DHF 2021/4/26 10:25
      */
-    public function getOrder($out_trade_no):array
+    public function getOrder(string $out_trade_no):array
     {
         $order =  Db::connection('yz')->select('
 SELECT * 
