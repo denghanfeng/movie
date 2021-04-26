@@ -135,6 +135,7 @@ class OrderService extends BaseService
      */
     public function list(int $orderStatus,int $max_id)
     {
+        var_dump($orderStatus);
         $order = Order::with([
             'cinema'=>function($query){
                 return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
@@ -143,8 +144,11 @@ class OrderService extends BaseService
                 return $query->select(['filmId','name','pic']);
             },
         ])->where('uid',$this->authService->getUser('uid'));
-        $orderStatus = $orderStatus == 4 ? [4,5,10] : $orderStatus;
-        $orderStatus && $order->where('orderStatus','in',$orderStatus);
+        if($orderStatus == 4){
+            $order->where('orderStatus','in',$orderStatus);
+        }elseif($orderStatus){
+            $order->where('orderStatus',$orderStatus);
+        }
         $max_id && $order->where('thirdOrderId','<=',$max_id);
         $count = $order->count();
         $list = $order
