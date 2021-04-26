@@ -87,12 +87,12 @@ class OrderService extends BaseService
     /**
      * 查询单个订单信息
      * @param int $thirdOrderId
-     * @return Order|\Hyperf\Database\Model\Builder|\Hyperf\Database\Model\Model|\Hyperf\Database\Query\Builder|object|null
-     * @author: DHF 2021/4/24 18:14
+     * @return array
+     * @author: DHF 2021/4/26 21:36
      */
     public function one(int $thirdOrderId)
     {
-        return Order::with([
+        $order = Order::with([
             'cinema'=>function($query){
                 return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
             },
@@ -101,26 +101,29 @@ class OrderService extends BaseService
             },
         ])
             ->select([
-            'seat',
-            'filmId',
-            'cinemaId',
-            'reservedPhone',
-            'acceptChangeSeat',
-            'orderStatus',
-            'created_at',
-            'thirdOrderId',
-            'hallName',
-            'showVersionType',
-            'language',
-            'planType',
-            'payPrice',
-            'initPrice',
-            'ticketCode',
-            'ticketImage',
-        ])
+                'seat',
+                'filmId',
+                'cinemaId',
+                'reservedPhone',
+                'acceptChangeSeat',
+                'orderStatus',
+                'created_at',
+                'thirdOrderId',
+                'hallName',
+                'showVersionType',
+                'language',
+                'planType',
+                'payPrice',
+                'initPrice',
+                'ticketCode',
+                'ticketImage',
+            ])
             ->where(['thirdOrderId'=>$thirdOrderId])
             ->where('uid',$this->authService->getUser('uid'))
             ->first();
+
+        $order->thirdOrderId = (string)$order->thirdOrderId;
+        return $order->toArray();
     }
 
     /**
@@ -167,6 +170,9 @@ class OrderService extends BaseService
                 'ticketImage',
             ])
             ->toArray();
+        foreach ($list as &$order){
+            $order['thirdOrderId'] = (string)$order['thirdOrderId'];
+        }
         return [
             'count'=>$count,
             'list'=>$list,
