@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\JsonRpc\YzApiInterface;
 use App\Model\Order;
 use App\Task\OrderTask;
 use Hyperf\Di\Annotation\Inject;
@@ -89,7 +90,22 @@ class PayService extends BaseService
      */
     public function notify($param)
     {
-        //return ApplicationContext::getContainer()->get(OrderTask::class)->create($param['order_id']);
+        $this->authPay($param);
+        return ApplicationContext::getContainer()->get(OrderTask::class)->create($param['action_order_id']);
+    }
+
+    /**
+     * 订单验证
+     * @param $param
+     * @author: DHF 2021/4/26 10:31
+     */
+    public function authPay($param)
+    {
+        $yz_api = ApplicationContext::getContainer()->get(YzApiInterface::class);
+        $order = $yz_api->getOrder($param['out_trade_no']);
+        if($param['total_fee'] != $order['total_fee'] || $param['action_order_id'] != $order['action_order_id'] ){
+            throw new RuntimeException('订单不相同',55005);
+        };
     }
 
 }

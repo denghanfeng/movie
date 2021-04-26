@@ -42,4 +42,22 @@ AND wx_id = ?
         return (array)$user;
     }
 
+    /**
+     * 获取订单信息
+     * @param int $out_trade_no
+     * @return array
+     * @author: DHF 2021/4/26 10:25
+     */
+    public function getOrder($out_trade_no):array
+    {
+        $order =  Db::connection('yz')->select('
+SELECT * 
+FROM api_pay_order
+WHERE out_trade_no = ?
+;',[$out_trade_no]);
+        if(empty($order[0])){
+            return [];
+        }
+        return (array)$order[0];
+    }
 }

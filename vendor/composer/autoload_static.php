@@ -633,6 +633,7 @@ class ComposerStaticInitda805a105b747007cc5d52092947cdb6
         'App\\Listener\\DbQueryExecutedListener' => __DIR__ . '/../..' . '/app/Listener/DbQueryExecutedListener.php',
         'App\\Listener\\QueueHandleListener' => __DIR__ . '/../..' . '/app/Listener/QueueHandleListener.php',
         'App\\Middleware\\AuthMiddleware' => __DIR__ . '/../..' . '/app/Middleware/AuthMiddleware.php',
+        'App\\Middleware\\CorsMiddleware' => __DIR__ . '/../..' . '/app/Middleware/CorsMiddleware.php',
         'App\\Model\\Cinema' => __DIR__ . '/../..' . '/app/Model/Cinema.php',
         'App\\Model\\City' => __DIR__ . '/../..' . '/app/Model/City.php',
         'App\\Model\\CityArea' => __DIR__ . '/../..' . '/app/Model/CityArea.php',

@@ -64,6 +64,11 @@ class NotifyController extends AbstractController
     {
         $param = $this->request->all();
         $this->logger->alert(json_encode($param));
+        $this->validated([
+            'out_trade_no' => 'required',
+            'total_fee' => 'integer',
+            'action_order_id' => 'integer',
+        ]);
         return $this->success($this->payService->notify($param));
     }
 

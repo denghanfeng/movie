@@ -18,6 +18,7 @@ return array(
     'App\\Listener\\DbQueryExecutedListener' => $baseDir . '/app/Listener/DbQueryExecutedListener.php',
     'App\\Listener\\QueueHandleListener' => $baseDir . '/app/Listener/QueueHandleListener.php',
     'App\\Middleware\\AuthMiddleware' => $baseDir . '/app/Middleware/AuthMiddleware.php',
+    'App\\Middleware\\CorsMiddleware' => $baseDir . '/app/Middleware/CorsMiddleware.php',
     'App\\Model\\Cinema' => $baseDir . '/app/Model/Cinema.php',
     'App\\Model\\City' => $baseDir . '/app/Model/City.php',
     'App\\Model\\CityArea' => $baseDir . '/app/Model/CityArea.php',
