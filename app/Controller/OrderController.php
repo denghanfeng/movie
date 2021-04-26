@@ -49,7 +49,10 @@ class OrderController extends AbstractController
             'payType' => 'required|integer',
         ]);
         $param = $this->request->all();
-        return $this->success($this->orderService->create($param));
+
+        $ordr = $this->orderService->create($param);
+        $this->logger->alert(json_encode($ordr));
+        return $this->success($ordr);
     }
 
     /**

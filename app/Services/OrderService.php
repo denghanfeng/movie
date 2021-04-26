@@ -79,6 +79,7 @@ class OrderService extends BaseService
         };
         $this->logger->alert($Order->thirdOrderId);
         $ref['thirdOrderId'] = $Order->thirdOrderId;
+        $this->logger->alert(json_encode($ref));
         return $ref;
     }
 
