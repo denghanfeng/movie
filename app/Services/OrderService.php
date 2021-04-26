@@ -112,8 +112,8 @@ class OrderService extends BaseService
             'showVersionType',
             'language',
             'planType',
+            'payPrice',
             'initPrice',
-            'orderPrice',
         ])->where(['thirdOrderId'=>$thirdOrderId])->first();
     }
 
@@ -145,6 +145,8 @@ class OrderService extends BaseService
                 'showVersionType',
                 'language',
                 'planType',
+                'payPrice',
+                'initPrice',
                 'cinemaId'
             ])
             ->toArray();
