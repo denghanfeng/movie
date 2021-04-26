@@ -45,6 +45,7 @@ class PayService extends BaseService
         if(!isset($info['code']) || $info['code'] !== 200){
             $info['message'] = $info['message'] ?? '调用失败';
             $info['code'] = $info['code'] ?? 404;
+            $this->logger->alert($this->post_url.json_encode($this->post_data));
             throw new RuntimeException($info['message'],$info['code']);
         }
         return $info['data'];
