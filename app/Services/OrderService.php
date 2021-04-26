@@ -141,7 +141,7 @@ class OrderService extends BaseService
             },
         ])->where('uid',$this->authService->getUser('uid'));
         $orderStatus = $orderStatus == 4 ? [4,5,10] : $orderStatus;
-        $orderStatus && $order->where('orderStatus',$orderStatus);
+        $orderStatus && $order->where('orderStatus','in',$orderStatus);
         $max_id && $order->where('thirdOrderId','<=',$max_id);
         $count = $order->count();
         $list = $order
