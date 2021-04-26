@@ -37,12 +37,21 @@ class OrderService extends BaseService
      * @return array|false
      * @author: DHF 2021/4/16 13:49
      */
-    public function create($param)
+    public function create($data)
     {
-        if(!$show = (new CrontabTask)->updateShow($param['cinemaId'],$param['showId'])){
+        if(!$show = (new CrontabTask)->updateShow($data['cinemaId'],$data['showId'])){
             throw new RuntimeException('订单场次查询失败',2005);
-        };
-        $param['uid'] = $this->authService->getUser('uid');
+        }
+        $param['showId'] = $data['showId'];
+        $param['cinemaId'] = $data['cinemaId'];
+        $param['seat'] = $data['seat'];
+        isset($data['filmId']) && $param['filmId'] = $data['filmId'];
+        isset($data['acceptChangeSeat']) && $param['acceptChangeSeat'] = $data['acceptChangeSeat'];
+        isset($data['reservedPhone']) && $param['reservedPhone'] = $data['reservedPhone'];
+        isset($data['payType']) && $param['payType'] = $data['payType'];
+        isset($data['seatId']) && $param['seatId'] = $data['seatId'];
+        isset($data['seatNo']) && $param['seatNo'] = $data['seatNo'];
+
         $param['orderStatus'] = Order::STATUS_START;
         $param['orderNum'] = count(explode(",",$param['seat']));
         $param['initPrice'] = $show->netPrice;
