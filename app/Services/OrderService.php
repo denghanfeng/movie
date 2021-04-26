@@ -99,7 +99,8 @@ class OrderService extends BaseService
             'filme'=>function($query){
                 return $query->select(['filmId','name','pic']);
             },
-        ])->select([
+        ])
+            ->select([
             'seat',
             'filmId',
             'cinemaId',
@@ -116,7 +117,10 @@ class OrderService extends BaseService
             'initPrice',
             'ticketCode',
             'ticketImage',
-        ])->where(['thirdOrderId'=>$thirdOrderId])->first();
+        ])
+            ->where(['thirdOrderId'=>$thirdOrderId])
+            ->where('uid',$this->authService->getUser('uid'))
+            ->first();
     }
 
     /**
@@ -135,7 +139,7 @@ class OrderService extends BaseService
             'filme'=>function($query){
                 return $query->select(['filmId','name','pic']);
             },
-        ]);
+        ])->where('uid',$this->authService->getUser('uid'));
         $orderStatus = $orderStatus == 4 ? [4,5,10] : $orderStatus;
         $orderStatus && $order->where('orderStatus',$orderStatus);
         $max_id && $order->where('thirdOrderId','<=',$max_id);
