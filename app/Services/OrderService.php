@@ -114,6 +114,8 @@ class OrderService extends BaseService
             'planType',
             'payPrice',
             'initPrice',
+            'ticketCode',
+            'ticketImage',
         ])->where(['thirdOrderId'=>$thirdOrderId])->first();
     }
 
