@@ -27,22 +27,24 @@ class AuthService extends BaseService
         if($this->getUser('uid') == $uid){
             return true;
         }
-        if(!$user = User::query()->where(['uid'=>$uid,'wx_id'=>$wx_id])->first()) {
-            $yz_api = ApplicationContext::getContainer()->get(YzApiInterface::class);
-            $user_info = $yz_api->getUser($uid,$wx_id);
-            if(empty($user_info)){
-                throw new RuntimeException('用户信息错误',2002);
-            }
-            $data['uid'] = $user_info['user_id'];
-            $data['nickname'] = $user_info['nickname'];
-            $data['headimgurl'] = $user_info['headimgurl'];
-            $data['openid'] = $user_info['openid'];
-            $data['unionid'] = $user_info['unionid'];
-            $data['wx_id'] = $user_info['wx_id'];
-            $data['accounts_id'] = $user_info['accounts_id'];
-            if(!$user = User::create($data)){
-                throw new RuntimeException('用户信息保存',2003);
-            };
+        $yz_api = ApplicationContext::getContainer()->get(YzApiInterface::class);
+        $user_info = $yz_api->getUser($uid,$wx_id);
+        if(empty($user_info)){
+            throw new RuntimeException('用户信息错误',2002);
+        }
+        $data['uid'] = $user_info['user_id'];
+        $data['nickname'] = $user_info['nickname'];
+        $data['headimgurl'] = $user_info['headimgurl'];
+        $data['openid'] = $user_info['openid'];
+        $data['mini_openid'] = $user_info['mini_openid'];
+        $data['unionid'] = $user_info['unionid'];
+        $data['wx_id'] = $user_info['wx_id'];
+        $data['accounts_id'] = $user_info['accounts_id'];
+
+        $where['uid'] = $data['uid'];
+
+        if(!$user = User::updateOrCreate($where, $data)){
+            throw new RuntimeException('用户信息保存',2003);
         }
         $this->session->set('user', $user->toArray());
     }

@@ -22,11 +22,25 @@ class YzApiService implements YzApiInterface
      */
     public function getUser(int $uid,int $wx_id): array
     {
-        $wx_list =  Db::connection('yz')->select('
+        $accounts_id = 0;
+        $mini_openid = '';
+        $h_user_list =  Db::connection('yz')->select('
+SELECT accounts_id,mini_openid
+FROM hm_user
+WHERE uid = ?
+;',[$uid]);
+        if(!empty($h_user_list[0])){
+            $accounts_id = $h_user_list[0]->accounts_id;
+            $mini_openid = $h_user_list[0]->mini_openid;
+        }
+        if(!$accounts_id){
+            $wx_list =  Db::connection('yz')->select('
 SELECT accounts_id 
 FROM wx_auth_info
 WHERE id = ?
 ;',[$wx_id]);
+            $accounts_id = empty($wx_list[0]) ? 0 : $wx_list[0]->accounts_id;
+        }
 
         $user_list =  Db::connection('yz')->select('
 SELECT * 
@@ -34,11 +48,12 @@ FROM wx_user_info
 WHERE user_id = ?
 AND wx_id = ?
 ;',[$uid,$wx_id]);
-        if(empty($user_list[0]) || empty($wx_list[0])){
+        if(empty($user_list[0]) || !$accounts_id){
             return [];
         }
         $user = $user_list[0];
-        $user->accounts_id = $wx_list[0]->accounts_id;
+        $user->accounts_id = $accounts_id;
+        $user->mini_openid = $mini_openid;
         return (array)$user;
     }
 
