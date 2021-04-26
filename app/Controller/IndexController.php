@@ -109,7 +109,8 @@ class IndexController extends AbstractController
         $cityId = $this->request->input('cityId', 0);
         $areaId = $this->request->input('areaId', 0);
         $max_id = $this->request->input('max_id', 0);
-        return $this->success($this->indexService->getCinemaList($cityId,$areaId,$max_id));
+        $keyword = $this->request->input('keyword', '');
+        return $this->success($this->indexService->getCinemaList($cityId,$areaId,$max_id,$keyword));
     }
 
     /**

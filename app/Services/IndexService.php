@@ -96,11 +96,12 @@ class IndexService extends BaseService
      * @return array
      * @author: DHF 2021/4/14 15:48
      */
-    public function getCinemaList($cityId,$areaId,$max_id):array
+    public function getCinemaList($cityId,$areaId,$max_id,$keyword = ''):array
     {
         $Cinema = Cinema::where('cityId',$cityId);
         $areaId && $Cinema->where('areaId',$areaId);
         $max_id && $Cinema->where('cinemaId','<',$max_id);
+        $keyword && $Cinema->where('cinemaName','like','%'.$keyword.'%');
         $data['count'] = $Cinema->count();
         $data['list'] = $Cinema
             ->limit(10)
