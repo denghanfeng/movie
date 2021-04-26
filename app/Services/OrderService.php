@@ -148,6 +148,7 @@ class OrderService extends BaseService
         $max_id && $order->where('thirdOrderId','<=',$max_id);
         $count = $order->count();
         $list = $order
+            ->limit(10)
             ->orderBy('thirdOrderId','desc')
             ->get([
                 'filmId',
