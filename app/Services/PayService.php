@@ -92,6 +92,11 @@ class PayService extends BaseService
     public function notify($param)
     {
         $this->authPay($param);
+        if(!$Order = Order::where(['thirdOrderId'=>$param['action_order_id'],'orderStatus'=>Order::STATUS_START])->first()){
+            throw new RuntimeException("没有找到信息 thirdOrderId={$param['action_order_id']}",33061);
+        };
+        $Order->orderStatus = Order::STATUS_PAY;
+        $Order->save();
         return ApplicationContext::getContainer()->get(OrderTask::class)->create($param['action_order_id']);
     }
 
