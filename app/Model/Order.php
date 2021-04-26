@@ -34,6 +34,7 @@ use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
  * @property string $planType 影厅类型 2D 3D
  * @property \Carbon\Carbon $created_at 
  * @property \Carbon\Carbon $updated_at 
+ * @property string $pid 渠道ID
  * @property-read \App\Model\Cinema $cinema 
  * @property-read \App\Model\Filme $filme 
  */
@@ -66,7 +67,7 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at'];
+    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at', 'pid'];
     /**
      * The attributes that should be cast to native types.
      *

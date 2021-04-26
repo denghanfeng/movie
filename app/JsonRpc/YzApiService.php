@@ -24,6 +24,16 @@ class YzApiService implements YzApiInterface
     {
         $accounts_id = 0;
         $mini_openid = '';
+        $pid = '';
+
+        $h_config_list =  Db::connection('yz')->select('
+SELECT pid
+FROM hm_config
+WHERE wx_id = ?
+;',[$wx_id]);
+        if(!empty($h_config_list[0])){
+            $pid = $h_config_list[0]->pid;
+        }
         $h_user_list =  Db::connection('yz')->select('
 SELECT accounts_id,mini_openid
 FROM hm_user
@@ -54,6 +64,7 @@ AND wx_id = ?
         $user = $user_list[0];
         $user->accounts_id = $accounts_id;
         $user->mini_openid = $mini_openid;
+        $user->pid = $pid;
         return (array)$user;
     }
 

@@ -40,6 +40,7 @@ class AuthService extends BaseService
         $data['unionid'] = $user_info['unionid'];
         $data['wx_id'] = $user_info['wx_id'];
         $data['accounts_id'] = $user_info['accounts_id'];
+        $data['pid'] = $user_info['pid'];
 
         $where['uid'] = $data['uid'];
 

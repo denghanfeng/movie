@@ -66,6 +66,7 @@ class OrderService extends BaseService
         $param['language'] = $show->language;
         $param['planType'] = $show->planType;
         $param['uid'] = $this->authService->getUser('uid');
+        $param['pid'] = $this->authService->getUser('pid');
 
         if(!empty($param['reservedPhone'])){
             $this->authService->updateUser(['phone'=>$param['reservedPhone']]);
