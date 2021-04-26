@@ -25,7 +25,7 @@ class AuthService extends BaseService
     public function login(int $uid,int $wx_id)
     {
         if($this->getUser('uid') == $uid){
-            return true;
+            //return true;
         }
         $yz_api = ApplicationContext::getContainer()->get(YzApiInterface::class);
         $user_info = $yz_api->getUser($uid,$wx_id);
