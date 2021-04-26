@@ -145,7 +145,7 @@ class OrderService extends BaseService
             },
         ])->where('uid',$this->authService->getUser('uid'));
         if($orderStatus == 4){
-            $order->where('orderStatus','in',$orderStatus);
+            $order->where('orderStatus','>=',4);
         }elseif($orderStatus){
             $order->where('orderStatus',$orderStatus);
         }
