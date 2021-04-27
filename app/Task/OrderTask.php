@@ -45,7 +45,6 @@ class OrderTask extends BasickTask
         }
         $data = [
             'orderStatus'=>Order::STATUS_ACCEPT,
-            'readyTicketTime'=>date("Y-m-d H:i:s"),//待出票时间
         ];
         $Order->update($data);
     }
