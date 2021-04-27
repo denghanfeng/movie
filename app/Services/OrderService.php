@@ -280,4 +280,21 @@ class OrderService extends BaseService
         }
         return [];
     }
+
+    /**
+     * 同步订单
+     * @param $thirdOrderId
+     * @return bool
+     * @author: DHF 2021/4/27 15:16
+     */
+    public function copyOrder($thirdOrderId)
+    {
+        if(!$copy_order =  $this->moiveService->create()->orderQuery(['thirdOrderId'=>$thirdOrderId])){
+            return false;
+        };
+        if(!Order::updateOrCreate(['thirdOrderId'=>$thirdOrderId],$copy_order)){
+            throw new RuntimeException('订单保存失败',2004);
+        }
+        return true;
+    }
 }

@@ -86,4 +86,18 @@ class NotifyController extends AbstractController
         (new CrontabTask)->updateAll();
         return $this->success();
     }
+
+    /**
+     * 同步订单
+     * @return \Psr\Http\Message\ResponseInterface
+     * @author: DHF 2021/4/27 15:16
+     */
+    public function copyOrder()
+    {
+        $this->validated([
+            'thirdOrderId' => 'required',
+        ]);
+        $thirdOrderId = $this->request->input('thirdOrderId');
+        return $this->success($this->orderService->copyOrder($thirdOrderId));
+    }
 }

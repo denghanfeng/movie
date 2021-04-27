@@ -622,6 +622,7 @@ class ComposerStaticInitda805a105b747007cc5d52092947cdb6
 
     public static $classMap = array (
         'App\\Controller\\AbstractController' => __DIR__ . '/../..' . '/app/Controller/AbstractController.php',
+        'App\\Controller\\ApiController' => __DIR__ . '/../..' . '/app/Controller/ApiController.php',
         'App\\Controller\\IndexController' => __DIR__ . '/../..' . '/app/Controller/IndexController.php',
         'App\\Controller\\NotifyController' => __DIR__ . '/../..' . '/app/Controller/NotifyController.php',
         'App\\Controller\\OrderController' => __DIR__ . '/../..' . '/app/Controller/OrderController.php',
@@ -632,8 +633,10 @@ class ComposerStaticInitda805a105b747007cc5d52092947cdb6
         'App\\JsonRpc\\YzApiService' => __DIR__ . '/../..' . '/app/JsonRpc/YzApiService.php',
         'App\\Listener\\DbQueryExecutedListener' => __DIR__ . '/../..' . '/app/Listener/DbQueryExecutedListener.php',
         'App\\Listener\\QueueHandleListener' => __DIR__ . '/../..' . '/app/Listener/QueueHandleListener.php',
+        'App\\Middleware\\ApiMiddleware' => __DIR__ . '/../..' . '/app/Middleware/ApiMiddleware.php',
         'App\\Middleware\\AuthMiddleware' => __DIR__ . '/../..' . '/app/Middleware/AuthMiddleware.php',
         'App\\Middleware\\CorsMiddleware' => __DIR__ . '/../..' . '/app/Middleware/CorsMiddleware.php',
+        'App\\Model\\Banner' => __DIR__ . '/../..' . '/app/Model/Banner.php',
         'App\\Model\\Cinema' => __DIR__ . '/../..' . '/app/Model/Cinema.php',
         'App\\Model\\City' => __DIR__ . '/../..' . '/app/Model/City.php',
         'App\\Model\\CityArea' => __DIR__ . '/../..' . '/app/Model/CityArea.php',

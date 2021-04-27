@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Controller\\AbstractController' => $baseDir . '/app/Controller/AbstractController.php',
+    'App\\Controller\\ApiController' => $baseDir . '/app/Controller/ApiController.php',
     'App\\Controller\\IndexController' => $baseDir . '/app/Controller/IndexController.php',
     'App\\Controller\\NotifyController' => $baseDir . '/app/Controller/NotifyController.php',
     'App\\Controller\\OrderController' => $baseDir . '/app/Controller/OrderController.php',
@@ -17,8 +18,10 @@ return array(
     'App\\JsonRpc\\YzApiService' => $baseDir . '/app/JsonRpc/YzApiService.php',
     'App\\Listener\\DbQueryExecutedListener' => $baseDir . '/app/Listener/DbQueryExecutedListener.php',
     'App\\Listener\\QueueHandleListener' => $baseDir . '/app/Listener/QueueHandleListener.php',
+    'App\\Middleware\\ApiMiddleware' => $baseDir . '/app/Middleware/ApiMiddleware.php',
     'App\\Middleware\\AuthMiddleware' => $baseDir . '/app/Middleware/AuthMiddleware.php',
     'App\\Middleware\\CorsMiddleware' => $baseDir . '/app/Middleware/CorsMiddleware.php',
+    'App\\Model\\Banner' => $baseDir . '/app/Model/Banner.php',
     'App\\Model\\Cinema' => $baseDir . '/app/Model/Cinema.php',
     'App\\Model\\City' => $baseDir . '/app/Model/City.php',
     'App\\Model\\CityArea' => $baseDir . '/app/Model/CityArea.php',
