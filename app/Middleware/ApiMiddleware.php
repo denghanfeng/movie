@@ -49,13 +49,7 @@ class ApiMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $query_params = $request->getQueryParams();
-        $headers_params = $request->getHeaders();
-        $body_params = $request->getParsedBody();
-        $headers_params = array_map(function ($header){
-            return $header[0] ?? '';
-        },$headers_params);
-        $params = array_merge($headers_params,$query_params,$body_params);
+        $params = $request->getQueryParams();
         $validator = $this->validationFactory->make(
             $params,
             [
@@ -65,11 +59,11 @@ class ApiMiddleware implements MiddlewareInterface
             ]
         );
         if ($validator->fails()){
-            throw new OutOfBoundsException($validator->errors()->first(),2001);
+            throw new OutOfBoundsException($validator->errors()->first(),2004);
         }
-//        if(!$this->checkEncrypt($params)){
-//            throw new OutOfBoundsException('验证失败',2002);
-//        }
+        if(!$this->checkEncrypt($params)){
+            throw new OutOfBoundsException('验证失败',2002);
+        }
 
         return $handler->handle($request);
     }
