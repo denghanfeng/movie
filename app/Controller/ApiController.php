@@ -11,12 +11,18 @@ declare(strict_types=1);
  */
 namespace App\Controller;
 
+use App\Services\IndexService;
 use App\Services\OrderService;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
-
+use Hyperf\HttpServer\Annotation\Middlewares;
+use Hyperf\HttpServer\Annotation\Middleware;
+use App\Middleware\ApiMiddleware;
 /**
  * @AutoController()
+ * @Middlewares({
+ *     @Middleware(ApiMiddleware::class)
+ * })
  */
 class ApiController extends AbstractController
 {
@@ -25,6 +31,11 @@ class ApiController extends AbstractController
      * @var OrderService
      */
     protected $orderService;
+    /**
+     * @Inject()
+     * @var IndexService
+     */
+    protected $indexService;
 
     /**
      * 订单信息
@@ -41,6 +52,20 @@ class ApiController extends AbstractController
             'uid' => 'integer',
         ]);
         return $this->success($this->orderService->apiList($param));
+    }
+
+    /**
+     * 获取热门电影信息
+     * @return \Psr\Http\Message\ResponseInterface
+     * @author: DHF 2021/4/27 13:55
+     */
+    public function hotMovie()
+    {
+        $this->validated([
+            'cityId' => 'integer',
+        ]);
+        $cityId = $this->request->input('cityId', 0);
+        return $this->success($this->indexService->getMovieList($cityId,'',1));
     }
 
 }
