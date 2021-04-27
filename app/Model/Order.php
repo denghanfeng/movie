@@ -36,6 +36,15 @@ use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
  * @property \Carbon\Carbon $updated_at 
  * @property string $pid 渠道ID
  * @property int $payPrice 支付金额：分
+ * @property string $filmeName 电影名称
+ * @property string $filmePic 电影图片
+ * @property string $cinemaName 影院名称
+ * @property string $cinemaAddress 影院名称
+ * @property string $latitude 纬度
+ * @property string $longitude 经度
+ * @property string $cinemaPhone 影院电话
+ * @property int $settle_amount 佣金
+ * @property int $real_commission 实际佣金
  * @property-read \App\Model\Cinema $cinema 
  * @property-read \App\Model\Filme $filme 
  */
@@ -70,13 +79,13 @@ class Order extends Model
      *
      * @var array
      */
-    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at', 'pid', 'payPrice'];
+    protected $fillable = ['thirdOrderId', 'uid', 'cinemaId', 'filmId', 'showId', 'appKey', 'orderStatus', 'orderStatusStr', 'initPrice', 'orderPrice', 'seat', 'orderNum', 'reservedPhone', 'readyTicketTime', 'ticketTime', 'closeTime', 'closeCause', 'payType', 'payOrder', 'ticketCode', 'ticketImage', 'acceptChangeSeat', 'hallName', 'showTime', 'showVersionType', 'language', 'planType', 'created_at', 'updated_at', 'pid', 'payPrice', 'filmeName', 'filmePic', 'cinemaName', 'cinemaAddress', 'latitude', 'longitude', 'cinemaPhone', 'settle_amount', 'real_commission'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['thirdOrderId' => 'integer', 'uid' => 'integer', 'cinemaId' => 'integer', 'filmId' => 'integer', 'orderStatus' => 'integer', 'initPrice' => 'integer', 'orderPrice' => 'integer', 'orderNum' => 'integer', 'payType' => 'integer', 'acceptChangeSeat' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'payPrice' => 'integer'];
+    protected $casts = ['thirdOrderId' => 'integer', 'uid' => 'integer', 'cinemaId' => 'integer', 'filmId' => 'integer', 'orderStatus' => 'integer', 'initPrice' => 'integer', 'orderPrice' => 'integer', 'orderNum' => 'integer', 'payType' => 'integer', 'acceptChangeSeat' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime', 'payPrice' => 'integer', 'settle_amount' => 'integer', 'real_commission' => 'integer'];
     /**
      * 影院信息
      * @return \Hyperf\Database\Model\Relations\HasOne
@@ -121,5 +130,17 @@ class Order extends Model
             $order = self::createById($param, $time + 1);
         }
         return $order;
+    }
+    /**
+     * 计算佣金
+     * @author: DHF 2021/4/27 18:38
+     */
+    public function checkSettle()
+    {
+        if ($this->orderPrice && $this->payPrice - $this->orderPrice != $this->real_commission) {
+            $this->real_commission = $this->payPrice - $this->orderPrice;
+            $this->settle_amount = $this->real_commission < 0 ? 0 : $this->real_commission;
+            $this->save();
+        }
     }
 }

@@ -1,13 +1,13 @@
 <?php
 namespace App\Services;
 
+use App\Model\Cinema;
+use App\Model\Filme;
 use App\Model\Order;
-use App\Model\User;
 use App\Server\moive\MoiveService;
 use App\Task\CrontabTask;
 use Hyperf\Di\Annotation\Inject;
 use RuntimeException;
-use function _HumbugBox61bfe547a037\RingCentral\Psr7\str;
 
 class OrderService extends BaseService
 {
@@ -48,20 +48,42 @@ class OrderService extends BaseService
         if(!$show = (new CrontabTask)->updateShow($data['cinemaId'],$data['showId'])){
             throw new RuntimeException('订单场次查询失败',2005);
         }
+        if(!$filme = Filme::find($data['filmId'])){
+            throw new RuntimeException('电影信息查询失败',2006);
+        }
+        if(!$cinema = Cinema::find($data['cinemaId'])){
+            throw new RuntimeException('电影信息查询失败',2006);
+        }
+
         isset($data['test']) && $param['appKey'] = Order::TEST_APP_KEY;
-        isset($data['filmId']) && $param['filmId'] = $data['filmId'];
         isset($data['acceptChangeSeat']) && $param['acceptChangeSeat'] = $data['acceptChangeSeat'];
         isset($data['reservedPhone']) && $param['reservedPhone'] = $data['reservedPhone'];
-        isset($data['payType']) && $param['payType'] = $data['payType'];
         isset($data['seatId']) && $param['seatId'] = $data['seatId'];
         isset($data['seatNo']) && $param['seatNo'] = $data['seatNo'];
-        $param['showId'] = $data['showId'];
-        $param['cinemaId'] = $data['cinemaId'];
+
         $param['seat'] = $data['seat'];
         $param['orderStatus'] = Order::STATUS_START;
-        $param['orderNum'] = count(explode(",",$param['seat']));
-        $param['initPrice'] = $show->netPrice;
-        $param['payPrice'] = ceil($show->netPrice * Order::PAY_BILI);
+        $param['orderNum'] = count(explode(",",$data['seat']));
+
+        $param['showId'] = $data['showId'];
+        $param['cinemaId'] = $data['cinemaId'];
+        $param['filmId'] = $data['filmId'];
+
+        $param['filmeName'] = $filme->name;
+        $param['filmePic'] = $filme->pic;
+
+        $param['cinemaName'] = $cinema->cinemaName;
+        $param['cinemaAddress'] = $cinema->address;
+        $param['latitude'] = $cinema->latitude;
+        $param['longitude'] = $cinema->longitude;
+        $param['cinemaPhone'] = $cinema->phone;
+        $param['cinemaPhone'] = $cinema->phone;
+
+
+        $param['initPrice'] = $show->netPrice * $param['orderNum'];
+        $param['payPrice'] = $show->payPrice ? $show->payPrice * $param['orderNum'] : $this->moiveService->create()->getCommission($show->netPrice,$cinema->cinemaId,$param['orderNum']);
+        $param['payType'] = $data['payType'];
+
         $param['hallName'] = $show->hallName;
         $param['showTime'] = $show->showTime;
         $param['showVersionType'] = $show->showVersionType;
@@ -92,17 +114,15 @@ class OrderService extends BaseService
      */
     public function one(int $thirdOrderId)
     {
-        $order = Order::with([
-            'cinema'=>function($query){
-                return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
-            },
-            'filme'=>function($query){
-                return $query->select(['filmId','name','pic']);
-            },
-        ])
-            ->select([
+        $order = Order::select([
                 'seat',
-                'filmId',
+                'cinemaName',
+                'cinemaAddress',
+                'latitude',
+                'longitude',
+                'cinemaPhone',
+                'filmeName',
+                'filmePic',
                 'cinemaId',
                 'reservedPhone',
                 'acceptChangeSeat',
@@ -135,14 +155,7 @@ class OrderService extends BaseService
      */
     public function list(int $orderStatus,int $max_id)
     {
-        $order = Order::with([
-            'cinema'=>function($query){
-                return $query->select(['cinemaId','cinemaName','address','latitude','longitude','phone','regionName']);
-            },
-            'filme'=>function($query){
-                return $query->select(['filmId','name','pic']);
-            },
-        ])->where('uid',$this->authService->getUser('uid'));
+        $order = Order::where('uid',$this->authService->getUser('uid'));
         if($orderStatus == 4){
             $order->whereIn('orderStatus',['4','5','10']);
         }elseif($orderStatus){
@@ -154,7 +167,13 @@ class OrderService extends BaseService
             ->limit(10)
             ->orderBy('thirdOrderId','desc')
             ->get([
-                'filmId',
+                'filmeName',
+                'filmePic',
+                'cinemaName',
+                'cinemaAddress',
+                'latitude',
+                'longitude',
+                'cinemaPhone',
                 'seat',
                 'reservedPhone',
                 'acceptChangeSeat',
@@ -227,6 +246,7 @@ class OrderService extends BaseService
         if(!$Order->update($this->notifyData($param))){
             throw new RuntimeException('订单保存失败',2004);
         };
+        $Order->checkSettle();
         return true;
     }
 

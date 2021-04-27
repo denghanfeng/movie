@@ -14,6 +14,8 @@ namespace App\Model;
  * @property string $regionName 地区名称
  * @property int $areaId 地区ID
  * @property int $isAcceptSoonOrder 是否支持秒出票，0为不支持，1为支持
+ * @property string $upDiscountRate 当价格大于等于39元时候
+ * @property string $downDiscountRate 当价格小于39元时候
  */
 class Cinema extends Model
 {
@@ -30,7 +32,7 @@ class Cinema extends Model
      *
      * @var array
      */
-    protected $fillable = ['cinemaId', 'cityId', 'cinemaName', 'address', 'latitude', 'longitude', 'phone', 'regionName', 'areaId', 'isAcceptSoonOrder'];
+    protected $fillable = ['cinemaId', 'cityId', 'cinemaName', 'address', 'latitude', 'longitude', 'phone', 'regionName', 'areaId', 'isAcceptSoonOrder', 'upDiscountRate', 'downDiscountRate'];
     /**
      * The attributes that should be cast to native types.
      *

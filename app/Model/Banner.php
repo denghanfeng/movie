@@ -9,11 +9,12 @@ namespace App\Model;
  * @property string $pic 图片链接
  * @property int $sort 排序
  * @property int $is_show 是否展示
- * @property \Carbon\Carbon $created_at 
- * @property \Carbon\Carbon $updated_at 
+ * @property string $created_at 
+ * @property string $updated_at 
  */
 class Banner extends Model
 {
+    public $timestamps = false;
     /**
      * The table associated with the model.
      *
@@ -31,5 +32,5 @@ class Banner extends Model
      *
      * @var array
      */
-    protected $casts = ['id' => 'integer', 'sort' => 'integer', 'is_show' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
+    protected $casts = ['id' => 'integer', 'sort' => 'integer', 'is_show' => 'integer'];
 }

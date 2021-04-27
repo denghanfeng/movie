@@ -1,6 +1,8 @@
 <?php
 namespace App\Server\moive;
 
+use App\Model\Cinema;
+
 /**
  * 电影接口
  * @author: DHF
@@ -88,5 +90,15 @@ interface IndexTemplate
      * @author: DHF 2021/4/26 11:53
      */
     public function notify($param):bool;
+
+    /**
+     * 价格计算
+     * @param $netPrice
+     * @param $count
+     * @param $cinemaId
+     * @return mixed
+     * @author: DHF 2021/4/27 18:05
+     */
+    public function getCommission($netPrice,$cinemaId,$count);
 
 }

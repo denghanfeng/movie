@@ -1,11 +1,12 @@
 <?php
 namespace App\Server\moive\shoutu;
 
+use App\Model\Cinema;
 use App\Server\moive\IndexTemplate;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use OutOfBoundsException;
-
+use App\Model\Config as ConfigModel;
 /**
  * 电影接口
  * @author: DHF
@@ -36,9 +37,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_CITY_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
     }
@@ -53,9 +52,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_CITY_AREA,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
     }
@@ -70,9 +67,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_CINEMA_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
     }
@@ -87,9 +82,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_HOT_LIST,$this->config->encrypt($param));
         if(!is_array($data) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
     }
@@ -104,9 +97,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_SOON_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
     }
@@ -121,11 +112,9 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_SCHEDULE_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
-        return $data['data']['list'];
+        return $data['data'];
     }
 
     /**
@@ -138,9 +127,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_SEAT,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['seatData'];
     }
@@ -155,9 +142,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_SHOW_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
     }
@@ -172,9 +157,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::GET_SHOW_DATE,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['dateList'];
     }
@@ -188,9 +171,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::API_ORDER_CREATE,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return true;
     }
@@ -216,9 +197,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::API_ORDER_QUERY,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data'];
     }
@@ -232,9 +211,7 @@ class IndexService implements IndexTemplate
     {
         $data = curlPost($this->config->cur_url.Config::API_USER_INFO,$this->config->encrypt());
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            $data['message'] = $data['message'] ?? '访问失败';
-            $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data'];
     }
@@ -263,9 +240,25 @@ class IndexService implements IndexTemplate
 //        if($data['code'] !== 200){
 //            $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';
-            throw new OutOfBoundsException($data['message'],$data['code']);
+            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
 //        }
 //        return $data['data'];
+    }
+
+    /**
+     * 支付金额
+     * @param $netPrice
+     * @param $count
+     * @param $cinemaId
+     * @author: DHF 2021/4/27 17:20
+     */
+    public function getCommission($netPrice,$cinemaId,$count)
+    {
+        $Cinema = Cinema::find($cinemaId);
+        $bili = $netPrice > 3900 ? $Cinema->upDiscountRate : $Cinema->downDiscountRate;
+        $bili = $bili ?: ConfigModel::where(['namespace'=>'shoutu','key'=>'payPili'])->first()->value;
+        $this->logger->alert($bili);
+        return $count * $netPrice * (float)$bili * 1.02;
     }
 
 }

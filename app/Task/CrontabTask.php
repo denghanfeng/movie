@@ -151,14 +151,18 @@ class CrontabTask
         if($showId && in_array($showId,$show_id_list)){
             return Show::find($showId);
         }
-        if(!$schedule_list = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
+        if(!$schedule = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
         }
+        $Cinema = Cinema::find($cinemaId);
+        $schedule_list = $schedule['list'];
+        isset($schedule['discountRule']) && $Cinema->update($schedule['discountRule']);
+
         $today = date("Y-m-d H:i:s");
         foreach ($schedule_list as $schedule){
             if(!in_array($schedule['showId'],$show_id_list) && $schedule['showTime'] >= $today){
                 $schedule['cinemaId'] = $cinemaId;
-                $schedule['payPrice'] = ceil($schedule['netPrice'] * Order::PAY_BILI);
+                $schedule['payPrice'] = $this->moiveService->create()->getCommission($schedule['netPrice'],$cinemaId,1);
                 $show = Show::updateOrCreate(['showId'=>$schedule['showId']], $schedule);
                 //如果指定更新则更新后直接退出
                 if($showId && $showId == $schedule['showId']) {
