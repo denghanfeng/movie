@@ -12,7 +12,7 @@ class CreateShows extends Migration
     public function up(): void
     {
         Schema::create('shows', function (Blueprint $table) {
-            $table->string('showId')->comment('场次标识')->unique();
+            $table->string('showId',100)->comment('场次标识');
             $table->integer('cinemaId')->default(0)->comment('影院id');
             $table->string('hallName')->default('')->comment('影厅名');
             $table->integer('filmId')->default(0)->comment('影片id');
@@ -24,6 +24,7 @@ class CreateShows extends Migration
             $table->integer('netPrice')->comment('参考价，单位：分');
             $table->string('language')->comment('语言');
             $table->string('planType')->comment('影厅类型 2D 3D');
+            $table->primary('showId');
         });
     }
 
