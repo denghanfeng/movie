@@ -40,6 +40,7 @@ class IndexController extends AbstractController
      */
     public function banner()
     {
+        $this->logger->alert(1);
         return $this->success($this->indexService->getBanner());
     }
 
