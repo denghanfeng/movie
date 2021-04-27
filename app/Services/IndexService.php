@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Model\Banner;
 use App\Model\Cinema;
 use App\Model\City;
 use App\Model\CityArea;
@@ -35,7 +36,7 @@ class IndexService extends BaseService
      */
     public function getBanner(): array
     {
-        return Filme::orderBy('grade','desc')->limit(4)->pluck('pic')->toArray();
+        return Banner::where('is_show',1)->orderBy('sort','desc')->limit(4)->pluck('pic')->toArray();
     }
 
     /**

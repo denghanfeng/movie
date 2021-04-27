@@ -43,7 +43,6 @@ class Order extends Model
 {
     //支付比例
     const PAY_BILI = 0.9;
-
     const TEST_APP_KEY = 100;
     //创建订单
     const STATUS_START = -1;

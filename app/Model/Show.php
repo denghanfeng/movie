@@ -16,6 +16,7 @@ namespace App\Model;
  * @property int $netPrice 参考价，单位：分
  * @property string $language 语言
  * @property string $planType 影厅类型 2D 3D
+ * @property int $payPrice 支付金额：分
  */
 class Show extends Model
 {
@@ -34,11 +35,11 @@ class Show extends Model
      *
      * @var array
      */
-    protected $fillable = ['showId', 'cinemaId', 'hallName', 'filmId', 'filmName', 'duration', 'showTime', 'stopSellTime', 'showVersionType', 'netPrice', 'language', 'planType'];
+    protected $fillable = ['showId', 'cinemaId', 'hallName', 'filmId', 'filmName', 'duration', 'showTime', 'stopSellTime', 'showVersionType', 'netPrice', 'language', 'planType', 'payPrice'];
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ['cinemaId' => 'integer', 'filmId' => 'integer', 'duration' => 'integer', 'netPrice' => 'integer'];
+    protected $casts = ['cinemaId' => 'integer', 'filmId' => 'integer', 'duration' => 'integer', 'netPrice' => 'integer', 'payPrice' => 'integer'];
 }
