@@ -257,7 +257,6 @@ class IndexService implements IndexTemplate
         $Cinema = Cinema::find($cinemaId);
         $bili = $netPrice > 3900 ? $Cinema->upDiscountRate : $Cinema->downDiscountRate;
         $bili = $bili ?: ConfigModel::where(['namespace'=>'shoutu','key'=>'payPili'])->first()->value;
-        $this->logger->alert($bili);
         return $count * $netPrice * (float)$bili * 1.02;
     }
 
