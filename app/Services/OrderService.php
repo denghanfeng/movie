@@ -241,6 +241,7 @@ class OrderService extends BaseService
         $data = [];
         switch ($param['eventName'])
         {
+            //出票
             case 'TICKET_SUCCESS':
                 $data['orderStatus'] = Order::STATUS_WAIT_STATEMENT;
                 $data['ticketCode'] = $param['ticketCode'];
@@ -248,8 +249,25 @@ class OrderService extends BaseService
                 $data['ticketTime'] = date("Y-m-d H:i:s");
                 empty($param['realSeat']) || $data['seat'] = $param['realSeat'];
                 break;
+            //同步取票码
+            case 'TICKET_SYNC':
+                $data['ticketCode'] = $param['ticketCode'];
+                $data['ticketImage'] = $param['ticketImage'];
+                empty($param['realSeat']) || $data['seat'] = $param['realSeat'];
+                break;
+            //等待出票
+            case 'WAIT_TICKET':
+                $data['orderStatus'] = Order::STATUS_WAIT_DRAWERS;
+                $data['orderPrice'] = $param['orderPrice'];
+                $data['readyTicketTime'] = date("Y-m-d H:i:s");
+                break;
+            //完结
+            case 'ORDER_FINISH':
+                $data['orderStatus'] = Order::STATUS_END;
+                $data['closeCause'] = $param['closeCause'];
+                $data['closeTime'] = date("Y-m-d H:i:s");
+                break;
         }
-
         return $data;
     }
 
