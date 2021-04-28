@@ -84,14 +84,14 @@ class CrontabTask
      */
     public function updateCinema()
     {
-        $city_list = City::all(['cityId']);
+        $city_list = City::where(['cityId'=>70])->get(['cityId']);
         $city_area_list = CityArea::all();
         $city_area_array = [];
         foreach ($city_area_list as $city_area){
             isset($city_area_array[$city_area->cityId]) || $city_area_array[$city_area->cityId] = [];
             $city_area_array[$city_area->cityId][$city_area->areaName] = $city_area->areaId;
         }
-
+        $this->logger->alert(json_encode($city_area_array[70]));
         foreach ($city_list as $city){
             if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
                 continue;
@@ -101,6 +101,9 @@ class CrontabTask
                 foreach ($cinema_list as $cinema) {
                     $cinema['cityId'] = $city->cityId;
                     $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
+                    if($cinema['areaId'] == 0){
+                        $this->logger->alert(json_encode($cinema));
+                    }
                     in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
                 }
             });
