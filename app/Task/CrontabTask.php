@@ -119,7 +119,6 @@ class CrontabTask
     public function updateFilme()
     {
         $city_list = City::pluck('cityId')->toArray();
-        $filme_list = Filme::pluck('filmId')->toArray();
         foreach ($city_list as $cityId){
             if(!$hot_list = $this->moiveService->create()->getHotList(['cityId'=>$cityId])){
                 return true;
@@ -128,7 +127,8 @@ class CrontabTask
                 return true;
             }
             $list = array_merge($hot_list,$soon_list);
-            co(function () use ($list,$cityId,$filme_list) {
+            co(function () use ($list,$cityId) {
+                $filme_list = Filme::where('cityId',$cityId)->pluck('filmId')->toArray();
                 Db::table('city_filmes')->where('cityId', $cityId)->delete();
                 foreach ($list as $filme){
                     $filme['like'] = (int)$filme['likeNum'];
