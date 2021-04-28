@@ -83,7 +83,20 @@ class NotifyController extends AbstractController
      */
     public function all()
     {
-        (new CrontabTask)->updateAll();
+        $CrontabTask = new CrontabTask;
+
+        $type = $this->request->input('type');
+        switch ($type){
+            case 1:
+                $CrontabTask->updateAll();
+                break;
+            case 2:
+                $CrontabTask->updateCinema();
+                break;
+            case 3:
+                $CrontabTask->updateFilme();
+                break;
+        }
         return $this->success();
     }
 
