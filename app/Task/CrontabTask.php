@@ -92,6 +92,7 @@ class CrontabTask
             $city_area_array[$city_area->cityId][$city_area->areaName] = $city_area->areaId;
         }
         $this->logger->alert(json_encode($city_area_array[70]));
+        die;
         foreach ($city_list as $city){
             if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
                 continue;
@@ -108,6 +109,7 @@ class CrontabTask
                 }
             });
         }
+
         return true;
     }
 
