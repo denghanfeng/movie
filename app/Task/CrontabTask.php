@@ -111,7 +111,7 @@ class CrontabTask
     }
 
     /**
-     * 同步所有电影
+     * 同步所有场次
      * @Crontab(rule="0 0 1 * * *", memo="updateFilme")
      * @param int $limit
      * @return array|bool
@@ -122,9 +122,10 @@ class CrontabTask
         $page = 1;
         while($page)
         {
-            $cinema_id_list = Cinema::limit($limit)->skip($limit*($page-1))->pluck('cinemaId')->toArray();
-            foreach ($cinema_id_list as $cinemaId){
-                ApplicationContext::getContainer()->get(ShowTask::class)->create($cinemaId);
+            $cinema_id_list = Cinema::limit($limit)->skip($limit*($page-1))->get(['cinemaId','cityId']);
+
+            foreach ($cinema_id_list as $cinema){
+                ApplicationContext::getContainer()->get(ShowTask::class)->create($cinema->cinemaId,$cinema->cityId);
             }
             if(count($cinema_id_list) == $limit){
                 $page++;

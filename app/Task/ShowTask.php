@@ -18,10 +18,11 @@ class ShowTask extends BasickTask
     /**
      * @Task
      * @param $cinemaId
+     * @param $cityId
      * @return bool
      * @author: DHF 2021/4/1 16:59
      */
-    public function create($cinemaId)
+    public function create($cinemaId,$cityId)
     {
         if(!$schedule = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
@@ -37,6 +38,7 @@ class ShowTask extends BasickTask
         foreach ($show_list as $show){
             if(!in_array($show['showId'],$show_id_list) && $show['showTime'] >= $today){
                 $show['cinemaId'] = $cinemaId;
+                $show['cityId'] = $cityId;
                 $show['payPrice'] = $this->moiveService->create()->getCommission($show['netPrice'],$cinemaId,1);
                 Show::create($show);
             }

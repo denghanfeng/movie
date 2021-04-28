@@ -11,6 +11,7 @@ use App\Model\Order;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
 use App\Task\CrontabTask;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 use RuntimeException;
 
@@ -226,7 +227,21 @@ class IndexService extends BaseService
      */
     public function getShowDate($param):array
     {
-        return $this->moiveService->create()->getShowDate($param);
+
+        $now = date("Y-m-d H:i:s");
+        $days = Db::table('shows')
+            ->where(['cityId'=>$param['cityId'],'filmId'=>$param['filmId']])
+            ->where('stopSellTime','>',$now)
+            ->select( Db::raw("date_format(`showTime`,'%Y-%m-%d') as `day`"))
+            ->groupBy('day')
+            ->get()
+            ->toArray();
+        $days = array_column($days,'day');
+        sort($days);
+        return [
+            'filme'=>Filme::find($param['filmId'])->toArray(),
+            'days'=>$days
+        ];
     }
 
     /**

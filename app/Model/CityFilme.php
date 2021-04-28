@@ -7,6 +7,7 @@ namespace App\Model;
  * @property int $id 
  * @property int $cityId 城市ID
  * @property int $filmId 影片id
+ * @property-read \App\Model\Filme $filme 
  */
 class CityFilme extends Model
 {
@@ -29,7 +30,6 @@ class CityFilme extends Model
      * @var array
      */
     protected $casts = ['id' => 'integer', 'cityId' => 'integer', 'filmId' => 'integer'];
-
     /**
      * 电影
      * @return \Hyperf\Database\Model\Relations\HasOne
