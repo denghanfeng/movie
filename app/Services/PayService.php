@@ -41,16 +41,26 @@ class PayService extends BaseService
                 $this->wxMini();
                 break;
         }
+        $this->checkData();
         $info = curlPost($this->post_url,$this->post_data);
         if(!isset($info['code']) || $info['code'] !== 200){
-            $info['message'] = $info['message'] ?? '调用失败';
-            $info['code'] = $info['code'] ?? 404;
-            $this->logger->alert($this->post_url.json_encode($this->post_data));
-            throw new RuntimeException($info['message'],$info['code']);
+            throw new RuntimeException($info['message']??'调用失败',$info['code']??404);
         }
         return $info['data'];
     }
 
+    /**
+     * 参数检查
+     * @author: DHF 2021/4/28 11:46
+     */
+    private function checkData()
+    {
+        foreach ($this->post_data as $key => $post){
+            if(!$post){
+                throw new RuntimeException("{$key} 参数缺失",201);
+            }
+        }
+    }
     /**
      * 基础参数
      * @author: DHF 2021/4/26 13:41
