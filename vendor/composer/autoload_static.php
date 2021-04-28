@@ -640,6 +640,7 @@ class ComposerStaticInitda805a105b747007cc5d52092947cdb6
         'App\\Model\\Cinema' => __DIR__ . '/../..' . '/app/Model/Cinema.php',
         'App\\Model\\City' => __DIR__ . '/../..' . '/app/Model/City.php',
         'App\\Model\\CityArea' => __DIR__ . '/../..' . '/app/Model/CityArea.php',
+        'App\\Model\\Config' => __DIR__ . '/../..' . '/app/Model/Config.php',
         'App\\Model\\Filme' => __DIR__ . '/../..' . '/app/Model/Filme.php',
         'App\\Model\\Model' => __DIR__ . '/../..' . '/app/Model/Model.php',
         'App\\Model\\Order' => __DIR__ . '/../..' . '/app/Model/Order.php',

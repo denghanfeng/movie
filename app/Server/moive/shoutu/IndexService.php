@@ -78,10 +78,14 @@ class IndexService implements IndexTemplate
      * @return false|mixed
      * @author: DHF
      */
-    public function getHotList(array $param = [])
+    public function getHotList(array $param = [],$times = 0)
     {
         $data = curlPost($this->config->cur_url.Config::GET_HOT_LIST,$this->config->encrypt($param));
-        if(!is_array($data) || $data['code'] !== 200){
+        if(empty($data)){
+            //电影获取容易失败
+            return $times > 3 ? false : $this->getHotList($param,$times++);
+        }
+        if(!isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];
@@ -90,13 +94,18 @@ class IndexService implements IndexTemplate
     /**
      * 即将上映电影
      * @param array $param
+     * @param int $times
      * @return false|mixed
      * @author: DHF
      */
-    public function getSoonList(array $param = [])
+    public function getSoonList(array $param = [],$times = 0)
     {
         $data = curlPost($this->config->cur_url.Config::GET_SOON_LIST,$this->config->encrypt($param));
-        if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
+        if(empty($data)){
+            //电影获取容易失败
+            return $times > 3 ? false : $this->getSoonList($param,$times++);
+        }
+        if(!isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data']['list'];

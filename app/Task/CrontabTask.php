@@ -4,12 +4,14 @@ namespace App\Task;
 use App\Model\Cinema;
 use App\Model\City;
 use App\Model\CityArea;
+use App\Model\CityFilme;
 use App\Model\Filme;
 use App\Model\Order;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Annotation\Crontab;
+use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
 
@@ -116,22 +118,30 @@ class CrontabTask
      */
     public function updateFilme()
     {
-        for ($id = 1;$id <= 10;$id++){
-
-                if(!$hot_list = $this->moiveService->create()->getHotList(['cityId'=>$id])){
-                    return true;
-                }
-                if(!$soon_list = $this->moiveService->create()->getSoonList(['cityId'=>$id])){
-                    return true;
-                }
-                $list = array_merge($hot_list,$soon_list);
-            co(function () use ($list) {
+        $city_list = City::pluck('cityId')->toArray();
+        $filme_list = Filme::pluck('filmId')->toArray();
+        foreach ($city_list as $cityId){
+            if(!$hot_list = $this->moiveService->create()->getHotList(['cityId'=>$cityId])){
+                return true;
+            }
+            if(!$soon_list = $this->moiveService->create()->getSoonList(['cityId'=>$cityId])){
+                return true;
+            }
+            $list = array_merge($hot_list,$soon_list);
+            co(function () use ($list,$cityId,$filme_list) {
+                Db::table('city_filmes')->where('cityId', $cityId)->delete();
                 foreach ($list as $filme){
-                    $filme['like'] = $filme['likeNum'];
+                    $filme['like'] = (int)$filme['likeNum'];
                     $filme['grade'] = (int)$filme['grade'];
                     $filme['duration'] = (int)$filme['duration'];
                     $filme['showStatus'] = (int)$filme['showStatus'];
-                    Filme::updateOrCreate(['filmId'=>$filme['filmId']], $filme);
+                    empty($filme['publishDate']) && $filme['publishDate'] = '0000-00-00 00:00:00';
+                    if(!in_array($filme['filmId'],$filme_list)){
+                        Filme::create($filme);
+                        $filme_list[] = $filme['filmId'];
+                    }
+                    $city_file = ['filmId'=>$filme['filmId'],'cityId'=>$cityId];
+                    CityFilme::create($city_file);
                 }
             });
         }

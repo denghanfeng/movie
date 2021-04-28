@@ -25,6 +25,7 @@ return array(
     'App\\Model\\Cinema' => $baseDir . '/app/Model/Cinema.php',
     'App\\Model\\City' => $baseDir . '/app/Model/City.php',
     'App\\Model\\CityArea' => $baseDir . '/app/Model/CityArea.php',
+    'App\\Model\\Config' => $baseDir . '/app/Model/Config.php',
     'App\\Model\\Filme' => $baseDir . '/app/Model/Filme.php',
     'App\\Model\\Model' => $baseDir . '/app/Model/Model.php',
     'App\\Model\\Order' => $baseDir . '/app/Model/Order.php',

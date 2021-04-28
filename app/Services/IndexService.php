@@ -5,6 +5,7 @@ use App\Model\Banner;
 use App\Model\Cinema;
 use App\Model\City;
 use App\Model\CityArea;
+use App\Model\CityFilme;
 use App\Model\Filme;
 use App\Model\Order;
 use App\Model\Show;
@@ -55,12 +56,14 @@ class IndexService extends BaseService
      * @return array
      * @author: DHF 2021/4/28 15:42
      */
-    public function hotMovie($city)
+    public function hotMovie($city):array
     {
         $dd = mb_strpos($city,'市');
         $city = $dd ? mb_substr($city,0,$dd) : $city;
         $cityId = City::where('regionName',$city)->value('cityId');
-        return $this->getHotList($cityId,'');
+        $select = ['filmId','pic','name'];
+        $list = $this->getMovieList($cityId,'',1,0,$select);
+        return $list['list'] ?? [];
     }
 
     /**
@@ -68,17 +71,27 @@ class IndexService extends BaseService
      * @param $cityId
      * @param $keyword
      * @param $showType 1 热门电影 2 即将上映
-     * @return array|false|mixed
+     * @return array
      * @author: DHF 2021/4/23 11:49
      */
-    public function getMovieList($cityId,$keyword,$showType)
+    public function getMovieList($cityId,$keyword = '',$showType = 1,$max_id = 0,$select = []):array
     {
-        switch ($showType){
-            case 2:
-                return $this->getSoonList($cityId,$keyword);
-            default:
-                return $this->getHotList($cityId,$keyword);
-        }
+        $filmIds = CityFilme::where(['cityId'=>$cityId])->pluck('filmId');
+        $filme = Filme::where('showStatus',$showType)
+            ->whereIn('filmId',$filmIds);
+        $keyword && $filme->where('name', 'like', "%{$keyword}%");
+        $count = $filme->count();
+        $max_id && $filme->where('filmId','<',$max_id);
+        empty($select) || $filme->select($select);
+        $list = $filme
+            ->limit(10)
+            ->orderBy('filmId','desc')
+            ->get()
+            ->toArray();
+        return [
+            'count'=>$count,
+            'list'=>$list,
+        ];
     }
 
     /**
@@ -216,41 +229,6 @@ class IndexService extends BaseService
     public function getShowDate($param):array
     {
         return $this->moiveService->create()->getShowDate($param);
-    }
-
-    /**
-     * 获取热门电影
-     * @param $cityId
-     * @param $keyword
-     * @return array
-     * @author: DHF 2021/4/14 14:47
-     */
-    public function getHotList($cityId,$keyword): array
-    {
-        $moive_list = $this->moiveService->create()->getHotList(['cityId'=>$cityId]);
-        if($keyword){
-            $moive_list = array_filter($moive_list,function($moive)use($keyword){
-                return mb_strpos($moive['name'],$keyword) !== false;
-            });
-        }
-        return $moive_list;
-    }
-
-    /**
-     * 即将上映电影
-     * @param $cityId
-     * @param $keyword
-     * @author: DHF 2021/4/14 14:55
-     */
-    public function getSoonList($cityId,$keyword)
-    {
-        $moive_list = $this->moiveService->create()->getSoonList(['cityId'=>$cityId]);
-        if($keyword){
-            $moive_list = array_filter($moive_list,function($moive)use($keyword){
-                return mb_strpos($moive['name'],$keyword) !== false;
-            });
-        }
-        return $moive_list;
     }
 
     /**
