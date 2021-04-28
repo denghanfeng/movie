@@ -101,7 +101,9 @@ class CrontabTask
                     $cinema['cityId'] = $city->cityId;
                     $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
                     if($cinema['areaId'] == 0){
+                        $this->logger->alert(json_encode($city_area_array[70]));
                         $this->logger->alert(json_encode($city_area_array[$cinema['cityId']]));
+                        $this->logger->alert($cinema['cityId']);
                         $this->logger->alert($cinema['regionName']);
                         $this->logger->alert(json_encode($cinema));
                         if($cinema['regionName'] == '双流区'){
