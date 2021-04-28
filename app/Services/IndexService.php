@@ -216,7 +216,7 @@ class IndexService extends BaseService
         $moive_list = $this->moiveService->create()->getHotList(['cityId'=>$cityId]);
         if($keyword){
             $moive_list = array_filter($moive_list,function($moive)use($keyword){
-                return strpos($moive['name'],$keyword);
+                return mb_strpos($moive['name'],$keyword) !== false;
             });
         }
         return $moive_list;
@@ -233,7 +233,7 @@ class IndexService extends BaseService
         $moive_list = $this->moiveService->create()->getSoonList(['cityId'=>$cityId]);
         if($keyword){
             $moive_list = array_filter($moive_list,function($moive)use($keyword){
-                return strpos($moive['name'],$keyword);
+                return strpos($moive['name'],$keyword) !== false;
             });
         }
         return $moive_list;
