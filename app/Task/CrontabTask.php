@@ -84,7 +84,7 @@ class CrontabTask
      */
     public function updateCinema()
     {
-        $city_list = City::where(['cityId'=>70])->get(['cityId']);
+        $city_list = City::all(['cityId']);
         $city_area_list = CityArea::all();
         $city_area_array = [];
         foreach ($city_area_list as $city_area){
