@@ -6,14 +6,14 @@ use App\Model\City;
 use App\Model\CityArea;
 use App\Model\CityFilme;
 use App\Model\Filme;
-use App\Model\Order;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-
+use Hyperf\Utils\ApplicationContext;
+use App\Task\ShowTask;
 
 class CrontabTask
 {
@@ -111,6 +111,31 @@ class CrontabTask
     }
 
     /**
+     * 同步所有电影
+     * @Crontab(rule="0 0 1 * * *", memo="updateFilme")
+     * @param int $limit
+     * @return array|bool
+     * @author: DHF 2021/4/28 20:08
+     */
+    public function updateAllShow($limit = 100)
+    {
+        $page = 1;
+        while($page)
+        {
+            $cinema_id_list = Cinema::limit($limit)->skip($limit*($page-1))->pluck('cinemaId')->toArray();
+            foreach ($cinema_id_list as $cinemaId){
+                ApplicationContext::getContainer()->get(ShowTask::class)->create($cinemaId);
+            }
+            if(count($cinema_id_list) == $limit){
+                $page++;
+            }else{
+                $page = 0;
+            }
+        }
+    }
+
+
+    /**
      * 同步电影信息
      * @Crontab(rule="0 30 0 * * *", memo="updateFilme")
      * @return bool
@@ -164,9 +189,7 @@ class CrontabTask
         if(!$schedule = $this->moiveService->create()->getScheduleList(['cinemaId'=>$cinemaId])){
             return false;
         }
-        $Cinema = Cinema::find($cinemaId);
         $schedule_list = $schedule['list'];
-        isset($schedule['discountRule']) && $Cinema->update($schedule['discountRule']);
 
         $today = date("Y-m-d H:i:s");
         foreach ($schedule_list as $schedule){

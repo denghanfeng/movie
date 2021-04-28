@@ -17,7 +17,7 @@ namespace App\Model;
  * @property string $language 语言
  * @property string $planType 影厅类型 2D 3D
  * @property int $payPrice 支付金额：分
- * @property string $scheduleArea 支付金额：分
+ * @property string $scheduleArea 座位价格
  */
 class Show extends Model
 {

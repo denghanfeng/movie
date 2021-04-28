@@ -149,9 +149,6 @@ class IndexService extends BaseService
      */
     public function shows($cinemaId,$filmId,$date):array
     {
-        if(!(new CrontabTask)->updateShow($cinemaId)){
-            throw new RuntimeException('信息更新失败',2005);
-        };
         //电影信息
         $film_id_list = Show::where('cinemaId',$cinemaId)->pluck('filmId')->toArray();
         $filme = Filme::findMany($film_id_list)->toArray();
@@ -161,23 +158,21 @@ class IndexService extends BaseService
         //排期时间筛选
         $show_list = Show::where(['cinemaId'=>$cinemaId,'filmId'=>$filmId])->where('stopSellTime','>',$now)->pluck('showTime')->toArray();
         $dates = [];
-
+        $list = [];
         foreach ($show_list as $show){
             $show_day = substr($show,0,10);
+            $list[$show_day][] = $show;
             in_array($show_day,$dates) || $dates[] = $show_day;
         }
         sort($dates);
         if(!in_array($date,$dates)){
             $date = $dates[0] ?? '';
         }
-
-        $list = $date ? $this->getSchedule($cinemaId,$filmId,$date) : [];
-
         return [
             'cinema'=>Cinema::find($cinemaId)->toArray(),//影院信息
             'film'=> $filme,
             'dates'=> $dates,
-            'list'=> $list,//当日排期
+            'list'=> $list[$date]??[],  //当日排期
         ];
     }
 

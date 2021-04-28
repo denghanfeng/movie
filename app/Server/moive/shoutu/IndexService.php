@@ -2,8 +2,8 @@
 namespace App\Server\moive\shoutu;
 
 use App\Model\Cinema;
+use App\Server\moive\BasicService;
 use App\Server\moive\IndexTemplate;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\Inject;
 use OutOfBoundsException;
 use App\Model\Config as ConfigModel;
@@ -13,14 +13,8 @@ use App\Model\Config as ConfigModel;
  * Class MoiveService
  * @package app\service\menuLink
  */
-class IndexService implements IndexTemplate
+class IndexService extends BasicService implements IndexTemplate
 {
-
-    /**
-     * @Inject()
-     * @var StdoutLoggerInterface
-     */
-    protected $logger;
     /**
      * @Inject
      * @var Config
@@ -35,7 +29,7 @@ class IndexService implements IndexTemplate
      */
     public function getCityList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_CITY_LIST,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_CITY_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -50,7 +44,7 @@ class IndexService implements IndexTemplate
      */
     public function getCityAreaList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_CITY_AREA,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_CITY_AREA,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -65,7 +59,7 @@ class IndexService implements IndexTemplate
      */
     public function getCinemaList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_CINEMA_LIST,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_CINEMA_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -78,13 +72,9 @@ class IndexService implements IndexTemplate
      * @return false|mixed
      * @author: DHF
      */
-    public function getHotList(array $param = [],$times = 0)
+    public function getHotList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_HOT_LIST,$this->config->encrypt($param));
-        if(empty($data)){
-            //电影获取容易失败
-            return $times > 3 ? false : $this->getHotList($param,$times++);
-        }
+        $data = $this->$this->curlPost($this->config->cur_url.Config::GET_HOT_LIST,$this->config->encrypt($param));
         if(!isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -94,17 +84,12 @@ class IndexService implements IndexTemplate
     /**
      * 即将上映电影
      * @param array $param
-     * @param int $times
      * @return false|mixed
      * @author: DHF
      */
-    public function getSoonList(array $param = [],$times = 0)
+    public function getSoonList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_SOON_LIST,$this->config->encrypt($param));
-        if(empty($data)){
-            //电影获取容易失败
-            return $times > 3 ? false : $this->getSoonList($param,$times++);
-        }
+        $data = $this->curlPost($this->config->cur_url.Config::GET_SOON_LIST,$this->config->encrypt($param));
         if(!isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -119,9 +104,10 @@ class IndexService implements IndexTemplate
      */
     public function getScheduleList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_SCHEDULE_LIST,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_SCHEDULE_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
-            throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
+            return false;
+            //throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
         return $data['data'];
     }
@@ -134,7 +120,7 @@ class IndexService implements IndexTemplate
      */
     public function getSeat(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_SEAT,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_SEAT,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -149,7 +135,7 @@ class IndexService implements IndexTemplate
      */
     public function getShowList(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_SHOW_LIST,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_SHOW_LIST,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -164,7 +150,7 @@ class IndexService implements IndexTemplate
      */
     public function getShowDate(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::GET_SHOW_DATE,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::GET_SHOW_DATE,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -178,7 +164,7 @@ class IndexService implements IndexTemplate
      */
     public function createOrder(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::API_ORDER_CREATE,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::API_ORDER_CREATE,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -193,7 +179,7 @@ class IndexService implements IndexTemplate
      */
     public function orderHandle(array $param = [])
     {
-        return curlPost($this->config->cur_url.Config::API_AUTOMATION_ORDERHANDLE,$this->config->encrypt($param));
+        return $this->curlPost($this->config->cur_url.Config::API_AUTOMATION_ORDERHANDLE,$this->config->encrypt($param));
     }
 
     /**
@@ -204,7 +190,7 @@ class IndexService implements IndexTemplate
      */
     public function orderQuery(array $param = [])
     {
-        $data = curlPost($this->config->cur_url.Config::API_ORDER_QUERY,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::API_ORDER_QUERY,$this->config->encrypt($param));
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -218,7 +204,7 @@ class IndexService implements IndexTemplate
      */
     public function userInfo()
     {
-        $data = curlPost($this->config->cur_url.Config::API_USER_INFO,$this->config->encrypt());
+        $data = $this->curlPost($this->config->cur_url.Config::API_USER_INFO,$this->config->encrypt());
         if(!is_array($data) || !isset($data['code']) || $data['code'] !== 200){
             throw new OutOfBoundsException($data['message']??'访问失败',$data['code']??'404');
         }
@@ -245,7 +231,7 @@ class IndexService implements IndexTemplate
      */
     public function soonOrder($param)
     {
-        $data = curlPost($this->config->cur_url.Config::API_ORDER_SOON_ORDER,$this->config->encrypt($param));
+        $data = $this->curlPost($this->config->cur_url.Config::API_ORDER_SOON_ORDER,$this->config->encrypt($param));
 //        if($data['code'] !== 200){
 //            $data['message'] = $data['message'] ?? '访问失败';
             $data['code'] = $data['code'] ?? '404';

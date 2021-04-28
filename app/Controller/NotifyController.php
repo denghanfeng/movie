@@ -96,6 +96,9 @@ class NotifyController extends AbstractController
             case 3:
                 $CrontabTask->updateFilme();
                 break;
+            case 4:
+                $CrontabTask->updateAllShow();
+                break;
         }
         return $this->success();
     }

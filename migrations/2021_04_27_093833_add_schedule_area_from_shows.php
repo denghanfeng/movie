@@ -12,7 +12,7 @@ class AddScheduleAreaFromShows extends Migration
     public function up(): void
     {
         Schema::table('shows', function (Blueprint $table) {
-            $table->string('scheduleArea')->default('')->comment('座位分区价格');
+            $table->string('scheduleArea',500)->default('')->comment('座位分区价格');
         });
     }
 
