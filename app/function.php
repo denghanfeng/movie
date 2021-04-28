@@ -37,6 +37,22 @@ function curlPost($url,$data,$headers=[])
 }
 
 /**
+ * @DESC curl get请求
+ * @param $url
+ * @return mixed
+ */
+function  curlGet ( $url ){
+    $ch=curl_init($url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回
+    curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
+    curl_setopt($ch, CURLOPT_BINARYTRANSFER, true) ; // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回
+    $output = curl_exec($ch) ;
+    $json_str=json_decode($output,true);
+    /*return access_token*/
+    return $json_str;
+}
+
+/**
  * 汉字转数字
  * @param $str
  * @return float|int|mixed

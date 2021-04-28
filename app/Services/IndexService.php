@@ -253,4 +253,21 @@ class IndexService extends BaseService
         $date && $Show->whereBetween('showTime', [$date,date("Y-m-d", strtotime('+1 day',strtotime($date)))]);
         return $Show->get()->toArray();
     }
+
+    /**
+     * 地址查询
+     * @param $longitude
+     * @param $latitude
+     * @return array|false
+     * @author: DHF 2021/4/28 10:47
+     */
+    public function getCoder($longitude,$latitude)
+    {
+        $url = "http://api.map.baidu.com/geocoder?location={$latitude},{$longitude}&output=json&key=RKAfLvwqst37aqV6WvEt12j2Oem4cndM";
+        $ref =  curlGet($url);
+        if(isset($ref['status']) && $ref['status'] == 'OK'){
+            return $ref['result'];
+        }
+        return false;
+    }
 }

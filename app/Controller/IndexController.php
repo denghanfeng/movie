@@ -179,4 +179,20 @@ class IndexController extends AbstractController
         $param = $this->request->all();
         return $this->success($this->indexService->getShowDate($param));
     }
+
+    /**
+     * 获取坐标
+     * @return \Psr\Http\Message\ResponseInterface
+     * @author: DHF 2021/4/28 10:44
+     */
+    public function getCoder()
+    {
+        $this->validated([
+            'longitude' => 'required',
+            'latitude' => 'required',
+        ]);
+        $longitude = $this->request->input('longitude');
+        $latitude = $this->request->input('latitude');
+        return $this->success($this->indexService->getCoder($longitude,$latitude));
+    }
 }
