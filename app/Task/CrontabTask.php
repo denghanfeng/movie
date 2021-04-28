@@ -95,21 +95,11 @@ class CrontabTask
             if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
                 continue;
             };
-            co(function () use ($cinema_list,$city) {
+            co(function () use ($cinema_list,$city,$city_area_array) {
                 $cinema_id_list = Cinema::where(['cityId' => $city->cityId])->pluck('cinemaId')->toArray();
                 foreach ($cinema_list as $cinema) {
                     $cinema['cityId'] = $city->cityId;
                     $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
-                    if($cinema['areaId'] == 0){
-                        $this->logger->alert(json_encode($city_area_array[70]));
-                        $this->logger->alert(json_encode($city_area_array[$cinema['cityId']]));
-                        $this->logger->alert($cinema['cityId']);
-                        $this->logger->alert($cinema['regionName']);
-                        $this->logger->alert(json_encode($cinema));
-                        if($cinema['regionName'] == '双流区'){
-                            die();
-                        }
-                    }
                     in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
                 }
             });
