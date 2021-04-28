@@ -20,9 +20,6 @@ use Hyperf\HttpServer\Annotation\Middleware;
 use App\Middleware\ApiMiddleware;
 /**
  * @AutoController()
- * @Middlewares({
- *     @Middleware(ApiMiddleware::class)
- * })
  */
 class ApiController extends AbstractController
 {
@@ -61,11 +58,8 @@ class ApiController extends AbstractController
      */
     public function hotMovie()
     {
-        $this->validated([
-            'cityId' => 'integer',
-        ]);
-        $cityId = $this->request->input('cityId', 0);
-        return $this->success($this->indexService->getMovieList($cityId,'',1));
+        $city = $this->request->input('city', '');
+        return $this->success($this->indexService->hotMovie($city));
     }
 
 }

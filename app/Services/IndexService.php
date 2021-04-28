@@ -50,6 +50,20 @@ class IndexService extends BaseService
     }
 
     /**
+     * 通过城市名称获取热门电影
+     * @param $city
+     * @return array
+     * @author: DHF 2021/4/28 15:42
+     */
+    public function hotMovie($city)
+    {
+        $dd = mb_strpos($city,'市');
+        $city = $dd ? mb_substr($city,0,$dd) : $city;
+        $cityId = City::where('regionName',$city)->value('cityId');
+        return $this->getHotList($cityId,'');
+    }
+
+    /**
      * 查看电影列表
      * @param $cityId
      * @param $keyword
@@ -233,7 +247,7 @@ class IndexService extends BaseService
         $moive_list = $this->moiveService->create()->getSoonList(['cityId'=>$cityId]);
         if($keyword){
             $moive_list = array_filter($moive_list,function($moive)use($keyword){
-                return strpos($moive['name'],$keyword) !== false;
+                return mb_strpos($moive['name'],$keyword) !== false;
             });
         }
         return $moive_list;
