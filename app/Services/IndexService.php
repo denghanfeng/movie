@@ -209,10 +209,13 @@ class IndexService extends BaseService
      */
     public function getShowList($param):array
     {
+        if(isset($param['areaId'])){
+            $param['area'] = CityArea::where(['areaId'=>$param['areaId']])->value('areaName');
+        }
         $param['limit'] = $param['limit'] ?? 10;
         if(!$cinema_list =  $this->moiveService->create()->getShowList($param)){
             return [];
-        };
+        }
         foreach ($cinema_list as &$cinema){
             (new CrontabTask)->updateShow($cinema['cinemaId']);
             $cinema['scheduleList'] = $this->getSchedule($cinema['cinemaId'],$param['filmId'],$param['date']);
