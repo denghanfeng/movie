@@ -16,6 +16,7 @@ use Swoole\Constant;
 return [
     'mode' => SWOOLE_PROCESS,
     'servers' => [
+        //电影业务
         [
             'name' => 'http',
             'type' => Server::SERVER_HTTP,
@@ -26,7 +27,7 @@ return [
                 Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
             ],
         ],
-        //微服务
+        //云瞻平台业务
         [
             'name' => 'jsonrpc',
             'type' => Server::SERVER_BASE,

@@ -7,6 +7,7 @@ use App\Model\CityArea;
 use App\Model\CityFilme;
 use App\Model\Filme;
 use App\Model\Show;
+use App\Model\StakLog;
 use App\Server\moive\MoiveService;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Annotation\Crontab;
@@ -34,9 +35,12 @@ class CrontabTask
      */
     public function updateAll()
     {
+
+        $StakLog = StakLog::create(['action'=>'updateAll','start_time'=>date('Y-m-d H:i:s')]);
         $this->updateCitys();
         $this->updateCityArea();
         $this->delShow();
+        $StakLog->update(['end_time'=>date('Y-m-d H:i:s')]);
     }
 
     /**
@@ -74,102 +78,6 @@ class CrontabTask
                 $city_area['cityId'] = $city->cityId;
                 in_array($city_area['areaId'], $city_area_id_list) || CityArea::updateOrCreate(['areaId' => $city_area['areaId']], $city_area);
             }
-        }
-        return true;
-    }
-
-    /**
-     * 同步电影院
-     * @Crontab(rule="0 0 1 * * *", memo="updateCinema")
-     * @return bool
-     * @author: DHF 2021/4/14 15:44
-     */
-    public function updateCinema()
-    {
-        $city_list = City::all(['cityId']);
-        $city_area_list = CityArea::all();
-        $city_area_array = [];
-        foreach ($city_area_list as $city_area){
-            isset($city_area_array[$city_area->cityId]) || $city_area_array[$city_area->cityId] = [];
-            $city_area_array[$city_area->cityId][$city_area->areaName] = $city_area->areaId;
-        }
-        foreach ($city_list as $city){
-            if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
-                continue;
-            };
-            co(function () use ($cinema_list,$city,$city_area_array) {
-                $cinema_id_list = Cinema::where(['cityId' => $city->cityId])->pluck('cinemaId')->toArray();
-                foreach ($cinema_list as $cinema) {
-                    $cinema['cityId'] = $city->cityId;
-                    $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
-                    in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
-                }
-            });
-        }
-
-        return true;
-    }
-
-    /**
-     * 同步所有场次
-     * @Crontab(rule="0 0 1 * * *", memo="updateFilme")
-     * @param int $limit
-     * @return array|bool
-     * @author: DHF 2021/4/28 20:08
-     */
-    public function updateAllShow($limit = 100)
-    {
-        $page = 1;
-        while($page)
-        {
-            $cinema_id_list = Cinema::limit($limit)->skip($limit*($page-1))->get(['cinemaId','cityId']);
-
-            foreach ($cinema_id_list as $cinema){
-                ApplicationContext::getContainer()->get(ShowTask::class)->create($cinema->cinemaId,$cinema->cityId);
-            }
-            if(count($cinema_id_list) == $limit){
-                $page++;
-            }else{
-                $page = 0;
-            }
-        }
-    }
-
-
-    /**
-     * 同步电影信息
-     * @Crontab(rule="0 30 0 * * *", memo="updateFilme")
-     * @return bool
-     * @author: DHF 2021/4/20 17:15
-     */
-    public function updateFilme()
-    {
-        $city_list = City::pluck('cityId')->toArray();
-        foreach ($city_list as $cityId){
-            if(!$hot_list = $this->moiveService->create()->getHotList(['cityId'=>$cityId])){
-                return true;
-            }
-            if(!$soon_list = $this->moiveService->create()->getSoonList(['cityId'=>$cityId])){
-                return true;
-            }
-            $list = array_merge($hot_list,$soon_list);
-            co(function () use ($list,$cityId) {
-                $filme_list = Filme::where('cityId',$cityId)->pluck('filmId')->toArray();
-                Db::table('city_filmes')->where('cityId', $cityId)->delete();
-                foreach ($list as $filme){
-                    $filme['like'] = (int)$filme['likeNum'];
-                    $filme['grade'] = (int)$filme['grade'];
-                    $filme['duration'] = (int)$filme['duration'];
-                    $filme['showStatus'] = (int)$filme['showStatus'];
-                    empty($filme['publishDate']) && $filme['publishDate'] = '0000-00-00 00:00:00';
-                    if(!in_array($filme['filmId'],$filme_list)){
-                        Filme::create($filme);
-                        $filme_list[] = $filme['filmId'];
-                    }
-                    $city_file = ['filmId'=>$filme['filmId'],'cityId'=>$cityId];
-                    CityFilme::create($city_file);
-                }
-            });
         }
         return true;
     }
@@ -219,5 +127,106 @@ class CrontabTask
         if(count($delect_ids) == $limit){
             $this->delShow();
         };
+    }
+
+    /**
+     * 同步电影信息
+     * @Crontab(rule="0 30 0 * * *", memo="updateFilme")
+     * @return bool
+     * @author: DHF 2021/4/20 17:15
+     */
+    public function updateFilme()
+    {
+        $StakLog = StakLog::create(['action'=>'updateFilme','start_time'=>date('Y-m-d H:i:s')]);
+        $city_list = City::pluck('cityId')->toArray();
+        foreach ($city_list as $cityId){
+            if(!$hot_list = $this->moiveService->create()->getHotList(['cityId'=>$cityId])){
+                return true;
+            }
+            if(!$soon_list = $this->moiveService->create()->getSoonList(['cityId'=>$cityId])){
+                return true;
+            }
+            $list = array_merge($hot_list,$soon_list);
+            co(function () use ($list,$cityId) {
+                $filme_list = Filme::where('cityId',$cityId)->pluck('filmId')->toArray();
+                Db::table('city_filmes')->where('cityId', $cityId)->delete();
+                foreach ($list as $filme){
+                    $filme['like'] = (int)$filme['likeNum'];
+                    $filme['grade'] = (int)$filme['grade'];
+                    $filme['duration'] = (int)$filme['duration'];
+                    $filme['showStatus'] = (int)$filme['showStatus'];
+                    empty($filme['publishDate']) && $filme['publishDate'] = '0000-00-00 00:00:00';
+                    if(!in_array($filme['filmId'],$filme_list)){
+                        Filme::create($filme);
+                        $filme_list[] = $filme['filmId'];
+                    }
+                    $city_file = ['filmId'=>$filme['filmId'],'cityId'=>$cityId];
+                    CityFilme::create($city_file);
+                }
+            });
+        }
+        $StakLog->update(['end_time'=>date('Y-m-d H:i:s')]);
+        return true;
+    }
+
+
+    /**
+     * 同步电影院
+     * @Crontab(rule="0 0 1 * * *", memo="updateCinema")
+     * @return bool
+     * @author: DHF 2021/4/14 15:44
+     */
+    public function updateCinema()
+    {
+        $StakLog = StakLog::create(['action'=>'updateCinema','start_time'=>date('Y-m-d H:i:s')]);
+        $city_list = City::all(['cityId']);
+        $city_area_list = CityArea::all();
+        $city_area_array = [];
+        foreach ($city_area_list as $city_area){
+            isset($city_area_array[$city_area->cityId]) || $city_area_array[$city_area->cityId] = [];
+            $city_area_array[$city_area->cityId][$city_area->areaName] = $city_area->areaId;
+        }
+        foreach ($city_list as $city){
+            if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
+                continue;
+            };
+            co(function () use ($cinema_list,$city,$city_area_array) {
+                $cinema_id_list = Cinema::where(['cityId' => $city->cityId])->pluck('cinemaId')->toArray();
+                foreach ($cinema_list as $cinema) {
+                    $cinema['cityId'] = $city->cityId;
+                    $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
+                    in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
+                }
+            });
+        }
+        $StakLog->update(['end_time'=>date('Y-m-d H:i:s')]);
+        return true;
+    }
+
+    /**
+     * 同步所有场次
+     * @Crontab(rule="0 0 2 * * *", memo="updateAllShow")
+     * @param int $limit
+     * @return array|bool
+     * @author: DHF 2021/4/28 20:08
+     */
+    public function updateAllShow($limit = 100)
+    {
+        $StakLog = StakLog::create(['action'=>'updateAllShow','start_time'=>date('Y-m-d H:i:s')]);
+        $page = 1;
+        while($page)
+        {
+            $cinema_id_list = Cinema::limit($limit)->skip($limit*($page-1))->get(['cinemaId','cityId']);
+
+            foreach ($cinema_id_list as $cinema){
+                ApplicationContext::getContainer()->get(ShowTask::class)->create($cinema->cinemaId,$cinema->cityId);
+            }
+            if(count($cinema_id_list) == $limit){
+                $page++;
+            }else{
+                $page = 0;
+            }
+        }
+        $StakLog->update(['end_time'=>date('Y-m-d H:i:s')]);
     }
 }
