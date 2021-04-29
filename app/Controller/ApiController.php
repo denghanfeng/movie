@@ -59,6 +59,7 @@ class ApiController extends AbstractController
     public function hotMovie()
     {
         $city = $this->request->input('city', '');
+        $this->logger->alert(date("Y-m-d H:i:s"));
         return $this->success($this->indexService->hotMovie($city));
     }
 
