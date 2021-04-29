@@ -94,7 +94,7 @@ class CrontabTask
     }
 
     /**
-     * 同步场次信息  废弃
+     * 同步场次信息
      * @param string $cinemaId
      * @param string $showId
      * @return Show|bool|\Hyperf\Database\Model\Model
@@ -102,6 +102,7 @@ class CrontabTask
      */
     public function updateShow(string $cinemaId,$showId = '')
     {
+        $this->logger->alert($cinemaId);
         $show_id_list = Show::where(['cinemaId'=>$cinemaId])->pluck('showId')->toArray();
         if($showId && in_array($showId,$show_id_list)){
             return Show::find($showId);
