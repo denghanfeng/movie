@@ -10,6 +10,7 @@ use App\Model\Filme;
 use App\Model\Order;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
+use App\Task\CrontabTask;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
 
@@ -151,6 +152,7 @@ class IndexService extends BaseService
     {
         $now = date("Y-m-d H:i:s");
 
+        (new CrontabTask())->updateShow($cinemaId);
         //电影信息
         $film_id_list = Show::where('cinemaId',$cinemaId)
             ->where('stopSellTime','>',$now)
