@@ -149,14 +149,21 @@ class IndexService extends BaseService
      */
     public function shows($cinemaId,$filmId,$date):array
     {
+        $now = date("Y-m-d H:i:s");
+
         //电影信息
-        $film_id_list = Show::where('cinemaId',$cinemaId)->pluck('filmId')->toArray();
+        $film_id_list = Show::where('cinemaId',$cinemaId)
+            ->where('stopSellTime','>',$now)
+            ->pluck('filmId')
+            ->toArray();
         $filme = Filme::findMany($film_id_list)->toArray();
         isset($filme[0]) && $filmId = $filmId ?: $filme[0]['filmId'];
 
-        $now = date("Y-m-d H:i:s");
         //排期时间筛选
-        $show_list = Show::where(['cinemaId'=>$cinemaId,'filmId'=>$filmId])->where('stopSellTime','>',$now)->pluck('showTime')->toArray();
+        $show_list = Show::where(['cinemaId'=>$cinemaId,'filmId'=>$filmId])
+            ->where('stopSellTime','>',$now)
+            ->pluck('showTime')
+            ->toArray();
         $dates = [];
         $list = [];
         foreach ($show_list as $show){
