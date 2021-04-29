@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Model\Cinema;
 use App\Model\Filme;
 use App\Model\Order;
+use App\Model\Show;
 use App\Server\moive\MoiveService;
 use App\Task\CrontabTask;
 use Hyperf\Di\Annotation\Inject;
@@ -45,7 +46,8 @@ class OrderService extends BaseService
      */
     public function create($data)
     {
-        if(!$show = (new CrontabTask)->updateShow($data['cinemaId'],$data['showId'])){
+        $show = Show::where('cinemaId',$data['cinemaId'])->where('showId',$data['showId'])->first();
+        if(!$show){
             throw new RuntimeException('订单场次查询失败',2005);
         }
         if(!$filme = Filme::find($data['filmId'])){

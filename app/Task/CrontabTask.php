@@ -9,12 +9,11 @@ use App\Model\Filme;
 use App\Model\Show;
 use App\Model\StakLog;
 use App\Server\moive\MoiveService;
+use Hyperf\AsyncQueue\Annotation\AsyncQueueMessage;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Annotation\Crontab;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use Hyperf\Utils\ApplicationContext;
-use App\Task\ShowTask;
 
 class CrontabTask
 {
@@ -70,20 +69,32 @@ class CrontabTask
     {
         $city_list = City::all(['cityId']);
         foreach ($city_list as $city){
-            if (!$city_area_list = $this->moiveService->create()->getCityAreaList(['cityId' => $city->cityId])) {
-                return false;
-            };
-            $city_area_id_list = CityArea::where(['cityId' => $city->cityId])->pluck('areaId')->toArray();
-            foreach ($city_area_list as $city_area) {
-                $city_area['cityId'] = $city->cityId;
-                in_array($city_area['areaId'], $city_area_id_list) || CityArea::updateOrCreate(['areaId' => $city_area['areaId']], $city_area);
-            }
+            $this->cityArea($city->cityId);
         }
         return true;
     }
 
     /**
-     * 同步场次信息
+     * 下级城市
+     * @AsyncQueueMessage
+     * @param $cityId
+     * @return false
+     * @author: DHF 2021/4/29 17:21
+     */
+    public function cityArea($cityId)
+    {
+        if (!$city_area_list = $this->moiveService->create()->getCityAreaList(['cityId' => $cityId])) {
+            return false;
+        };
+        $city_area_id_list = CityArea::where(['cityId' => $cityId])->pluck('areaId')->toArray();
+        foreach ($city_area_list as $city_area) {
+            $city_area['cityId'] = $cityId;
+            in_array($city_area['areaId'], $city_area_id_list) || CityArea::updateOrCreate(['areaId' => $city_area['areaId']], $city_area);
+        }
+    }
+
+    /**
+     * 同步场次信息  废弃
      * @param string $cinemaId
      * @param string $showId
      * @return Show|bool|\Hyperf\Database\Model\Model
@@ -169,7 +180,6 @@ class CrontabTask
         return true;
     }
 
-
     /**
      * 同步电影院
      * @Crontab(rule="0 0 1 * * *", memo="updateCinema")
@@ -187,39 +197,48 @@ class CrontabTask
             $city_area_array[$city_area->cityId][$city_area->areaName] = $city_area->areaId;
         }
         foreach ($city_list as $city){
-            if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$city->cityId])){
-                continue;
-            };
-            co(function () use ($cinema_list,$city,$city_area_array) {
-                $cinema_id_list = Cinema::where(['cityId' => $city->cityId])->pluck('cinemaId')->toArray();
-                foreach ($cinema_list as $cinema) {
-                    $cinema['cityId'] = $city->cityId;
-                    $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
-                    in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
-                }
-            });
+            $this->cinema($city->cityId);
         }
         $StakLog->update(['end_time'=>date('Y-m-d H:i:s')]);
         return true;
     }
 
     /**
+     * 电影院
+     * @AsyncQueueMessage
+     * @param $cityId
+     * @return false
+     * @author: DHF 2021/4/29 17:17
+     */
+    public function cinema($cityId)
+    {
+        if(!$cinema_list = $this->moiveService->create()->getCinemaList(['cityId'=>$cityId])){
+            return false;
+        };
+        $cinema_id_list = Cinema::where(['cityId' => $cityId])->pluck('cinemaId')->toArray();
+        foreach ($cinema_list as $cinema) {
+            $cinema['cityId'] = $cityId;
+            $cinema['areaId'] = $city_area_array[$cinema['cityId']][$cinema['regionName']] ?? 0;
+            in_array($cinema['cinemaId'], $cinema_id_list) || Cinema::updateOrCreate(['cinemaId' => $cinema['cinemaId']], $cinema);
+        }
+    }
+
+    /**
      * 同步所有场次
      * @Crontab(rule="0 0 2 * * *", memo="updateAllShow")
      * @param int $limit
+     * @param int $page
      * @return array|bool
      * @author: DHF 2021/4/28 20:08
      */
-    public function updateAllShow($limit = 100)
+    public function updateAllShow($limit = 100,$page =1)
     {
         $StakLog = StakLog::create(['action'=>'updateAllShow','start_time'=>date('Y-m-d H:i:s')]);
-        $page = 1;
         while($page)
         {
             $cinema_id_list = Cinema::limit($limit)->skip($limit*($page-1))->get(['cinemaId','cityId']);
-
             foreach ($cinema_id_list as $cinema){
-                ApplicationContext::getContainer()->get(ShowTask::class)->create($cinema->cinemaId,$cinema->cityId);
+                $this->show($cinema->cinemaId,$cinema->cityId);
             }
             if(count($cinema_id_list) == $limit){
                 $page++;
@@ -228,5 +247,36 @@ class CrontabTask
             }
         }
         $StakLog->update(['end_time'=>date('Y-m-d H:i:s')]);
+    }
+
+    /**
+     * 电影排期
+     * @AsyncQueueMessage
+     * @param $cinemaId
+     * @param $cityId
+     * @return bool
+     * @author: DHF 2021/4/1 16:59
+     */
+    public function show($cinemaId,$cityId)
+    {
+        if (!$schedule = $this->moiveService->create()->getScheduleList(['cinemaId' => $cinemaId])) {
+            return false;
+        }
+        $show_id_list = Show::where(['cinemaId' => $cinemaId])->pluck('showId')->toArray();
+        $show_list = $schedule['list'];
+        $discountRule = $schedule['discountRule'] ?? [];
+        if (!empty($discountRule)) {
+            $cinema = Cinema::find($cinemaId);
+            $cinema && $cinema->update($discountRule);
+        }
+        $today = date("Y-m-d H:i:s");
+        foreach ($show_list as $show) {
+            if (!in_array($show['showId'], $show_id_list) && $show['showTime'] >= $today) {
+                $show['cinemaId'] = $cinemaId;
+                $show['cityId'] = $cityId;
+                $show['payPrice'] = $this->moiveService->create()->getCommission($show['netPrice'], $cinemaId, 1);
+                Show::create($show);
+            }
+        }
     }
 }
