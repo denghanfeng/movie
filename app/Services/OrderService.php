@@ -50,7 +50,7 @@ class OrderService extends BaseService
         if(!$show){
             throw new RuntimeException('订单场次查询失败',2005);
         }
-        if(!$show->stopSellTime <= date("Y-m-d H:i:s")){
+        if($show->stopSellTime <= date("Y-m-d H:i:s")){
             throw new RuntimeException('已经超时不能下单',2009);
         }
         if(!$filme = Filme::find($data['filmId'])){

@@ -60,6 +60,7 @@ class IndexService extends BaseService
         $dd = mb_strpos($city,'市');
         $city = $dd ? mb_substr($city,0,$dd) : $city;
         $cityId = City::where('regionName',$city)->value('cityId');
+        $cityId = $cityId ?: 70;
         $select = ['filmId','pic','name'];
         $list = $this->getMovieList($cityId,'',1,0,$select);
         return $list['list'] ?? [];
