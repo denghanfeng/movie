@@ -209,9 +209,11 @@ class IndexService extends BaseService
         $cinema_list = [];
         $page = $param['page'] ?: 1;
 
+        $now = date("Y-m-d H:i:s");
         //所有有电影的电影院
         $cinemaIds = Show::where('filmId',$param['filmId'])
             ->where('cityId',$param['cityId'])
+            ->where('stopSellTime','>',$now)
             ->whereBetween('stopSellTime',[$date,date("Y-m-d", strtotime('+1 day',strtotime($date)))])
             ->select( 'cinemaId')
             ->groupBy('cinemaId')
@@ -243,6 +245,7 @@ class IndexService extends BaseService
             $page_cinema_ids = array_column($cinema_list,'cinemaId');
             $show_list = Show::whereIn('cinemaId',$page_cinema_ids)
                 ->where('filmId',$param['filmId'])
+                ->where('stopSellTime','>',$now)
                 ->whereBetween('showTime', [$date,date("Y-m-d", strtotime('+1 day',strtotime($date)))])
                 ->orderBy('showTime')
                 ->get()
