@@ -39,4 +39,17 @@ class Cinema extends Model
      * @var array
      */
     protected $casts = ['cinemaId' => 'integer', 'cityId' => 'integer', 'areaId' => 'integer', 'isAcceptSoonOrder' => 'integer'];
+
+    public $distance = 0; //距离
+
+    /**
+     * 距离运算
+     * @param $latitude
+     * @param $longitude
+     * @author: DHF 2021/4/29 12:03
+     */
+    public static function checkDistance($latitude,$longitude,$tlatitude,$tlongitude)
+    {
+        return ceil(1000000 * abs($tlatitude - $latitude) * abs($tlongitude - $longitude));
+    }
 }

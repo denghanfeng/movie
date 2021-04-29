@@ -10,10 +10,8 @@ use App\Model\Filme;
 use App\Model\Order;
 use App\Model\Show;
 use App\Server\moive\MoiveService;
-use App\Task\CrontabTask;
 use Hyperf\DbConnection\Db;
 use Hyperf\Di\Annotation\Inject;
-use RuntimeException;
 
 class IndexService extends BaseService
 {
@@ -205,18 +203,65 @@ class IndexService extends BaseService
      */
     public function getShowList($param):array
     {
-        if(isset($param['areaId'])){
-            $param['area'] = CityArea::where(['areaId'=>$param['areaId']])->value('areaName');
+        $limit = $param['limit'] ?: 10;
+        $count = 0;
+        $date = $param['date'] ?? date("Y-m-d");
+        $cinema_list = [];
+        $page = $param['page'] ?: 1;
+
+        //所有有电影的电影院
+        $cinemaIds = Show::where('filmId',$param['filmId'])
+            ->where('cityId',$param['cityId'])
+            ->whereBetween('stopSellTime',[$date,date("Y-m-d", strtotime('+1 day',strtotime($date)))])
+            ->select( 'cinemaId')
+            ->groupBy('cinemaId')
+            ->pluck('cinemaId')
+            ->toArray();
+
+        if($cinemaIds){
+            //电影院分页
+            $Cinema = Cinema::whereIn('cinemaId',$cinemaIds);
+            isset($param['areaId']) && $Cinema->where('areaId',$param['areaId']);
+            $count = $Cinema->count();
+
+            //电影院信息
+            //有坐标需要运算 TODO::需要转移到 Elasticsearch 处理
+            if(!empty($param['latitude']) && !empty($param['longitude'])){
+
+                $cinema_list = $Cinema->orderBy('cinemaId','desc')->get()->toArray();
+                foreach ($cinema_list as &$cinema){
+                    $cinema['distance'] = Cinema::checkDistance($param['latitude'],$param['longitude'],$cinema['latitude'],$cinema['longitude']);
+                }
+                array_multisort(array_column($cinema_list,'distance'),$cinema_list);
+                array_splice($cinema_list, 0,($page - 1) * $limit);
+                array_splice($cinema_list, $limit);
+            }else{
+                //没有坐标直接查表
+                $cinema_list = $Cinema->limit($limit)->skip(($page - 1) * $limit)->get()->toArray();
+            }
+
+            $page_cinema_ids = array_column($cinema_list,'cinemaId');
+            $show_list = Show::whereIn('cinemaId',$page_cinema_ids)
+                ->where('filmId',$param['filmId'])
+                ->whereBetween('showTime', [$date,date("Y-m-d", strtotime('+1 day',strtotime($date)))])
+                ->orderBy('showTime')
+                ->get()
+                ->toArray();
+            $show_lists =[];
+            foreach ($show_list as $show){
+                $show_lists[$show['cinemaId']][] = $show;
+            }
+            foreach ($cinema_list as &$cinema){
+                $cinema['scheduleList'] = $show_lists[$cinema['cinemaId']];
+            }
         }
-        $param['limit'] = $param['limit'] ?? 10;
-        if(!$cinema_list =  $this->moiveService->create()->getShowList($param)){
-            return [];
-        }
-        foreach ($cinema_list as &$cinema){
-            (new CrontabTask)->updateShow($cinema['cinemaId']);
-            $cinema['scheduleList'] = $this->getSchedule($cinema['cinemaId'],$param['filmId'],$param['date']);
-        }
-        return $cinema_list;
+
+        return [
+            'count'=>$count,
+            'date'=>$date,
+            'list'=>$cinema_list,
+            'page'=>$page,
+        ];
     }
 
     /**

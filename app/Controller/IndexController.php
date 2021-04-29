@@ -158,9 +158,7 @@ class IndexController extends AbstractController
             'cityId' => 'required|integer',
             'date' => 'required|string',
             'page' => 'integer',
-            'limit' => 'integer',
-            'latitude' => 'double',
-            'longitude' => 'double',
+            'limit' => 'integer'
         ]);
         $param = $this->request->all();
         return $this->success($this->indexService->getShowList($param));
