@@ -14,16 +14,16 @@ class CreateShows extends Migration
         Schema::create('shows', function (Blueprint $table) {
             $table->string('showId',100)->comment('场次标识');
             $table->integer('cinemaId')->default(0)->comment('影院id');
-            $table->string('hallName')->default('')->comment('影厅名');
+            $table->string('hallName',50)->default('')->comment('影厅名');
             $table->integer('filmId')->default(0)->comment('影片id');
-            $table->string('filmName')->default('')->comment('影片名字');
+            $table->string('filmName',50)->default('')->comment('影片名字');
             $table->integer('duration')->default(0)->comment('时长,分钟');
             $table->timestamp('showTime')->comment('放映时间');
             $table->timestamp('stopSellTime')->comment('停售时间');
-            $table->string('showVersionType')->comment('场次类型');
+            $table->string('showVersionType',20)->comment('场次类型');
             $table->integer('netPrice')->comment('参考价，单位：分');
-            $table->string('language')->comment('语言');
-            $table->string('planType')->comment('影厅类型 2D 3D');
+            $table->string('language',10)->comment('语言');
+            $table->string('planType',10)->comment('影厅类型 2D 3D');
             $table->primary('showId');
         });
     }

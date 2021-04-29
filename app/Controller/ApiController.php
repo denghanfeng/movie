@@ -15,9 +15,7 @@ use App\Services\IndexService;
 use App\Services\OrderService;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\AutoController;
-use Hyperf\HttpServer\Annotation\Middlewares;
-use Hyperf\HttpServer\Annotation\Middleware;
-use App\Middleware\ApiMiddleware;
+
 /**
  * @AutoController()
  */
@@ -59,7 +57,7 @@ class ApiController extends AbstractController
     public function hotMovie()
     {
         $city = $this->request->input('city', '');
-        $this->logger->alert(date("Y-m-d H:i:s"));
+        $this->logger->alert(' hotMovie '.date("Y-m-d H:i:s").$city);
         return $this->success($this->indexService->hotMovie($city));
     }
 
